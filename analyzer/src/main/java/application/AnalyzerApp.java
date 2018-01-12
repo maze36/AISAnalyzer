@@ -1,5 +1,7 @@
 package application;
 
+import view.MainWindow;
+
 /**
  * Run this class in order to start the application.
  * 
@@ -9,7 +11,7 @@ package application;
 public class AnalyzerApp {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		MainWindow.startUI();
 
 	}
 
