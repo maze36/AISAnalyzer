@@ -16,6 +16,16 @@
   		<artifactId>junit</artifactId>
   		<version>4.12</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-graph</artifactId>
+  		<version>15.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.offis</groupId>
+  		<artifactId>MTCAS</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
   
 </project>
