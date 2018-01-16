@@ -1,4 +1,4 @@
-package model.road_network;
+package model.quadtree;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package model.road_network;
+package model.quadtree;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
