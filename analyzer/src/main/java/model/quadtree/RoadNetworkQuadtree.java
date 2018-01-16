@@ -14,9 +14,10 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import behaviorPredictor.logic.dataModel.cpaRoute.MathematicalOperation;
-import util.LengthUnit;
-import util.MTCASUtil;
+import enums.MathematicalOperation;
+import units.LengthUnit;
+import util.GeoCalculations;
+
 
 public class RoadNetworkQuadtree {
 
@@ -84,14 +85,14 @@ public class RoadNetworkQuadtree {
 			result = list.get(0);
 			
 			Iterator<Node> iterator = list.iterator();
-			double currentNearestDistanceToVesselLocation = MTCASUtil.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+			double currentNearestDistanceToVesselLocation = GeoCalculations.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
 			
 			while(iterator.hasNext()) {
 				
 				Node node = (Node)iterator.next();
 				
 				double distanceOfVesselLocationToRoadNetworkNode = 
-						MTCASUtil.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+						GeoCalculations.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
 				
 				if(currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
 					result = node;
@@ -119,11 +120,11 @@ public class RoadNetworkQuadtree {
 		double opposite_leg = widthOfFunnel / 2.0;
 		double hypotenuse = Math.sqrt(((heightOfFunnel * heightOfFunnel) + (opposite_leg * opposite_leg)));
 		double alpha = Math.asin((opposite_leg / hypotenuse));
-		double angleToLeftLimes = MTCASUtil.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
-		double angleToRightLimes = MTCASUtil.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
+		double angleToLeftLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
+		double angleToRightLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
 		
-		Point2D leftPointOfFunnel = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
-		Point2D rightPointOfFunnel = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
+		Point2D leftPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
+		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
 		
 		Coordinate leftPoint = new Coordinate(leftPointOfFunnel.getX(), leftPointOfFunnel.getY());
 		Coordinate rightPoint = new Coordinate(rightPointOfFunnel.getX(), rightPointOfFunnel.getY());
@@ -142,14 +143,14 @@ public class RoadNetworkQuadtree {
 			result = list.get(0);
 			
 			Iterator<Node> iterator = list.iterator();
-			double currentNearestDistanceToVesselLocation = MTCASUtil.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+			double currentNearestDistanceToVesselLocation = GeoCalculations.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
 			
 			while(iterator.hasNext()) {
 				
 				Node node = (Node)iterator.next();
 				
 				double distanceOfVesselLocationToRoadNetworkNode = 
-						MTCASUtil.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+						GeoCalculations.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
 				
 				if(currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
 					result = node;
@@ -177,11 +178,11 @@ public class RoadNetworkQuadtree {
 		double opposite_leg = widthOfFunnel / 2.0;
 		double hypotenuse = Math.sqrt(((heightOfFunnel * heightOfFunnel) + (opposite_leg * opposite_leg)));
 		double alpha = Math.asin((opposite_leg / hypotenuse));
-		double angleToLeftLimes = MTCASUtil.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
-		double angleToRightLimes = MTCASUtil.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
+		double angleToLeftLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
+		double angleToRightLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
 		
-		Point2D leftPointOfFunnel = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
-		Point2D rightPointOfFunnel = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
+		Point2D leftPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
+		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
 		
 		Coordinate leftPoint = new Coordinate(leftPointOfFunnel.getX(), leftPointOfFunnel.getY());
 		Coordinate rightPoint = new Coordinate(rightPointOfFunnel.getX(), rightPointOfFunnel.getY());
@@ -209,8 +210,8 @@ public class RoadNetworkQuadtree {
 		
 		double hypotenuse = (Math.sin(Math.toRadians(45.0)) * diameter) / 2.0;
 		
-		Point2D minPoint = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, 225.0);
-		Point2D maxPoint = MTCASUtil.calculateNewPosition(vesselPosition, hypotenuse, 45.0);
+		Point2D minPoint = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, 225.0);
+		Point2D maxPoint = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, 45.0);
 		
 		Coordinate leftLowerCorner = new Coordinate(minPoint.getX(), minPoint.getY());
 		Coordinate rightUpperCorner = new Coordinate(maxPoint.getX(), maxPoint.getY());

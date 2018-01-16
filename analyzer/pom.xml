@@ -66,11 +66,6 @@
   		<artifactId>gt-graph</artifactId>
   		<version>15.0</version>
   	</dependency>
-  	<dependency>
-  		<groupId>de.offis</groupId>
-  		<artifactId>MTCAS</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
   </dependencies>
   
 </project>
