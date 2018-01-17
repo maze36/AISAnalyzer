@@ -14,9 +14,9 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import enums.MathematicalOperation;
-import units.LengthUnit;
-import util.GeoCalculations;
+import controller.util.GeoCalculations;
+import model.units.LengthUnit;
+import model.units.enums.MathematicalOperation;
 
 
 public class RoadNetworkQuadtree {
