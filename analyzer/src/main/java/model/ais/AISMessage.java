@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class AISMessage {
 
-	private long mmsi;
+	private Integer mmsi;
 
 	private double cog;
 
@@ -22,24 +22,25 @@ public class AISMessage {
 
 	private Date timestamp;
 
-	private AISMessageType messageType;
+	private double heading;
+
+	private double rot;
 
 	public AISMessage() {
 
 	}
 
-	public AISMessage(long mmsi, double cog, double sog, double lat, double lon, Date timestamp,
-			AISMessageType messageType) {
+	public AISMessage(Integer mmsi, double cog, double sog, double lat, double lon, Date timestamp, double rot,
+			double heading) {
 		this.mmsi = mmsi;
 		this.cog = cog;
 		this.sog = sog;
 		this.lat = lat;
 		this.lon = lon;
 		this.timestamp = timestamp;
-		this.messageType = messageType;
 	}
 
-	public long getMmsi() {
+	public Integer getMmsi() {
 		return mmsi;
 	}
 
@@ -63,7 +64,7 @@ public class AISMessage {
 		return timestamp;
 	}
 
-	public void setMmsi(long mmsi) {
+	public void setMmsi(Integer mmsi) {
 		this.mmsi = mmsi;
 	}
 
@@ -87,12 +88,20 @@ public class AISMessage {
 		this.timestamp = timestamp;
 	}
 
-	public AISMessageType getMessageType() {
-		return messageType;
+	public double getHeading() {
+		return heading;
 	}
 
-	public void setMessageType(AISMessageType messageType) {
-		this.messageType = messageType;
+	public void setHeading(double heading) {
+		this.heading = heading;
+	}
+
+	public double getRot() {
+		return rot;
+	}
+
+	public void setRot(double rot) {
+		this.rot = rot;
 	}
 
 }

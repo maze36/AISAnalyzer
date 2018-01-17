@@ -20,6 +20,27 @@ public class Track {
 		this.startDate = aisMessage.getTimestamp();
 	}
 
+	/**
+	 * Checks whether the given {@link Date} belongs to the current track or
+	 * not. If the time difference between the last message of the {@link Track}
+	 * and the given {@link Date} is smaller than 15000 ms, true is returned.
+	 * 
+	 * @param timestamp
+	 *            The {@link Date} to check.
+	 * @return
+	 */
+	public boolean messageBelongsToTrack(Date timestamp) {
+
+		long milliCurrentEndDate = this.endDate.getTime();
+		long milliNewMessage = timestamp.getTime();
+		long timeDiff = milliNewMessage - milliCurrentEndDate;
+		if (timeDiff <= 150000) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public boolean addMessage(AISMessage aisMessage) {
 		return this.aisMessages.add(aisMessage);
 	}

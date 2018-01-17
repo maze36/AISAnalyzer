@@ -1,5 +1,6 @@
 package analyzer.input;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vividsolutions.jts.util.Assert;
@@ -9,6 +10,7 @@ import model.vessel.VesselContainer;
 
 public class CSVReaderTest {
 
+	@Ignore
 	@Test
 	public void testCSVReaderStaticData() {
 		String path = "C:/Users/msteidel/Desktop/voyageData.csv";
@@ -17,6 +19,15 @@ public class CSVReaderTest {
 
 		Assert.isTrue(!result.isEmpty());
 
+	}
+
+	@Test
+	public void testCSVReaderDynamicData() {
+		String path = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/DynamicData.csv";
+
+		VesselContainer vesselContainer = new VesselContainer();
+
+		CSVReader.readDynamicAISMessage(path, vesselContainer);
 	}
 
 }

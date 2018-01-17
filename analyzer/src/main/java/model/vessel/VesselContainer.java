@@ -60,4 +60,8 @@ public class VesselContainer {
 		return false;
 	}
 
+	public ArrayList<Vessel> getList() {
+		return this.vesselContainer;
+	}
+
 }

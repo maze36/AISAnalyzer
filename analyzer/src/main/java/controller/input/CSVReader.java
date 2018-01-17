@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import model.ais.AISMessage;
+import model.track.Track;
 import model.vessel.ShipType;
 import model.vessel.Vessel;
 import model.vessel.VesselContainer;
@@ -26,8 +28,12 @@ public class CSVReader {
 	private final static String SPLITTER = ",";
 
 	/**
+	 * Reads a CSV file that contains static aisMessages. A
+	 * {@link VesselContainer} is created, filled with {@link Vessel} and
+	 * returned.
 	 * 
 	 * @param csvLocation
+	 *            The path of the CSV file.
 	 * @return
 	 */
 	public static VesselContainer readStaticAISMessages(String csvLocation) {
@@ -73,23 +79,73 @@ public class CSVReader {
 
 					}
 				}
-
-				System.out.println();
 			}
-
 			return result;
-
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/**
+	 * Reads a CSV file that contains dynamic aisMessages. The {@link Track}
+	 * list of each vessel is filled with the respective {@link AISMessage}.
+	 * 
+	 * @param csvLocation
+	 * @param vesselContainer
+	 * @return True if successful, otherwise false.
+	 */
+	public static boolean readDynamicAISMessage(String csvLocation, VesselContainer vesselContainer) {
+
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] aisMessage = LINE.split(SPLITTER);
+				Integer mmsi = Integer.valueOf(aisMessage[0].replaceAll("\"", ""));
+				double heading = Double.valueOf(aisMessage[1].replaceAll("\"", ""));
+				double sog = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
+				double cog = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
+				double rot = Double.valueOf(aisMessage[4].replaceAll("\"", ""));
+				Date timestamp = transformDate(aisMessage[6].replaceAll("\"", ""));
+				double lat = Double.valueOf(aisMessage[7].replaceAll("\"", ""));
+				double lon = Double.valueOf(aisMessage[8].replaceAll("\"", ""));
+
+				AISMessage message = new AISMessage(mmsi, cog, sog, lat, lon, timestamp, rot, heading);
+
+				for (Vessel vessel : vesselContainer.getList()) {
+					if (vessel.getMmsi() == message.getMmsi()) {
+						if (vessel.getTracks().isEmpty()) {
+							Track track = new Track(message);
+							vessel.getTracks().add(track);
+						} else {
+							for (Track track : vessel.getTracks()) {
+								if (track.messageBelongsToTrack(message.getTimestamp())) {
+									track.addMessage(message);
+								} else {
+									Track newTrack = new Track(message);
+									vessel.getTracks().add(newTrack);
+								}
+							}
+						}
+					}
+				}
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Checks which {@link ShipType} is contained in the given {@link String}.
 	 * 
 	 * @param aisShipType
 	 * @return
