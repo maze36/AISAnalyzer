@@ -18,19 +18,17 @@ import controller.util.GeoCalculations;
 import model.units.LengthUnit;
 import model.units.enums.MathematicalOperation;
 
-
 public class RoadNetworkQuadtree {
 
 	private QuadtreeNode root;
 	private ArrayList<Node> store;
 	private int maxLevel;
 	private int maxElementsPerNode;
-	
-	
+
 	public RoadNetworkQuadtree() {
 		super();
 	}
-	
+
 	/**
 	 * 
 	 * @param env
@@ -47,13 +45,14 @@ public class RoadNetworkQuadtree {
 		this.maxElementsPerNode = maxElementsPerNode;
 		this.store = new ArrayList<Node>();
 	}
-	
+
 	/**
 	 * 
-	 * @param node will be inserted into roadNetworkQuadtree
+	 * @param node
+	 *            will be inserted into roadNetworkQuadtree
 	 */
 	public void insert(Node node) {
-		
+
 		if (store.contains(node) || !root.intersectRoadNetworkNode(node)) {
 			return;
 		}
@@ -69,32 +68,35 @@ public class RoadNetworkQuadtree {
 	/**
 	 * finds the nearest node to the given coordinate in the road network
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity the next node should be found
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity the next node
+	 *            should be found
 	 * @return nearest node to given coordinate
 	 */
 	public Node findNearestRoadNetworkNode(Coordinate vesselPosition) {
-		
+
 		Envelope env = new Envelope(vesselPosition);
-		
+
 		List<Node> list = new ArrayList<Node>();
 		list = deepSearchSingleNode(env, root, list);
-		
+
 		Node result = null;
-		
-		if(!list.isEmpty()) {
+
+		if (!list.isEmpty()) {
 			result = list.get(0);
-			
+
 			Iterator<Node> iterator = list.iterator();
-			double currentNearestDistanceToVesselLocation = GeoCalculations.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
-			
-			while(iterator.hasNext()) {
-				
-				Node node = (Node)iterator.next();
-				
-				double distanceOfVesselLocationToRoadNetworkNode = 
-						GeoCalculations.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
-				
-				if(currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
+			double currentNearestDistanceToVesselLocation = GeoCalculations
+					.calculateDistance((Coordinate) result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+
+			while (iterator.hasNext()) {
+
+				Node node = (Node) iterator.next();
+
+				double distanceOfVesselLocationToRoadNetworkNode = GeoCalculations
+						.calculateDistance((Coordinate) node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+
+				if (currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
 					result = node;
 					currentNearestDistanceToVesselLocation = distanceOfVesselLocationToRoadNetworkNode;
 				}
@@ -105,54 +107,62 @@ public class RoadNetworkQuadtree {
 
 	/**
 	 * 
-	 * finds the nearest node to the given coordinate in the road network that is lying in the travel direction of the vessel
+	 * finds the nearest node to the given coordinate in the road network that
+	 * is lying in the travel direction of the vessel
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity the next node should be found
-	 * @param cog course of the vessel in which proximity the next node should be found, number in degree
-	 * @param heightOfFunnel number in nautical miles
-	 * @param widthOfFunnel number in nautical miles
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity the next node
+	 *            should be found
+	 * @param cog
+	 *            course of the vessel in which proximity the next node should
+	 *            be found, number in degree
+	 * @param heightOfFunnel
+	 *            number in nautical miles
+	 * @param widthOfFunnel
+	 *            number in nautical miles
 	 * @return nearest node to vessel position in its direction
 	 */
-	public Node findNearestRoadNetworkNodeInDirection(Coordinate vesselPosition, double cog, double heightOfFunnel, double widthOfFunnel) {
-		
+	public Node findNearestRoadNetworkNodeInDirection(Coordinate vesselPosition, double cog, double heightOfFunnel,
+			double widthOfFunnel) {
+
 		GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-		
+
 		double opposite_leg = widthOfFunnel / 2.0;
 		double hypotenuse = Math.sqrt(((heightOfFunnel * heightOfFunnel) + (opposite_leg * opposite_leg)));
 		double alpha = Math.asin((opposite_leg / hypotenuse));
 		double angleToLeftLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
 		double angleToRightLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
-		
+
 		Point2D leftPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
-		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
-		
+		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse,
+				angleToRightLimes);
+
 		Coordinate leftPoint = new Coordinate(leftPointOfFunnel.getX(), leftPointOfFunnel.getY());
 		Coordinate rightPoint = new Coordinate(rightPointOfFunnel.getX(), rightPointOfFunnel.getY());
-		
-		
-		Coordinate[] coords = new Coordinate[]{vesselPosition, leftPoint, rightPoint, vesselPosition};
+
+		Coordinate[] coords = new Coordinate[] { vesselPosition, leftPoint, rightPoint, vesselPosition };
 		Geometry geo = geometryFactory.createPolygon(coords);
-		
-		
+
 		List<Node> list = new ArrayList<Node>();
 		list = deepSearch(geo.getEnvelopeInternal(), root, list);
-		
+
 		Node result = null;
-		
-		if(!list.isEmpty()) {
+
+		if (!list.isEmpty()) {
 			result = list.get(0);
-			
+
 			Iterator<Node> iterator = list.iterator();
-			double currentNearestDistanceToVesselLocation = GeoCalculations.calculateDistance((Coordinate)result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
-			
-			while(iterator.hasNext()) {
-				
-				Node node = (Node)iterator.next();
-				
-				double distanceOfVesselLocationToRoadNetworkNode = 
-						GeoCalculations.calculateDistance((Coordinate)node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
-				
-				if(currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
+			double currentNearestDistanceToVesselLocation = GeoCalculations
+					.calculateDistance((Coordinate) result.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+
+			while (iterator.hasNext()) {
+
+				Node node = (Node) iterator.next();
+
+				double distanceOfVesselLocationToRoadNetworkNode = GeoCalculations
+						.calculateDistance((Coordinate) node.getObject(), vesselPosition, LengthUnit.NAUTICALMILES);
+
+				if (currentNearestDistanceToVesselLocation > distanceOfVesselLocationToRoadNetworkNode) {
 					result = node;
 					currentNearestDistanceToVesselLocation = distanceOfVesselLocationToRoadNetworkNode;
 				}
@@ -160,114 +170,133 @@ public class RoadNetworkQuadtree {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
-	 * finds the nearest nodes to the given coordinate in the road network that is lying in the travel direction of the vessel
+	 * finds the nearest nodes to the given coordinate in the road network that
+	 * is lying in the travel direction of the vessel
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity defined by a funnel the nearest nodes should be found
-	 * @param cog course of the vessel in which proximity the next node should be found, number in degree
-	 * @param heightOfFunnel number in nautical miles
-	 * @param widthOfFunnel number in nautical miles
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity defined by a
+	 *            funnel the nearest nodes should be found
+	 * @param cog
+	 *            course of the vessel in which proximity the next node should
+	 *            be found, number in degree
+	 * @param heightOfFunnel
+	 *            number in nautical miles
+	 * @param widthOfFunnel
+	 *            number in nautical miles
 	 * @return nearest nodes to vessel position in its direction
 	 */
-	public ArrayList<Node> findNearestRoadNetworkNodesInDirection(Coordinate vesselPosition, double cog, double heightOfFunnel, double widthOfFunnel) {
-		
+	public ArrayList<Node> findNearestRoadNetworkNodesInDirection(Coordinate vesselPosition, double cog,
+			double heightOfFunnel, double widthOfFunnel) {
+
 		GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-		
+
 		double opposite_leg = widthOfFunnel / 2.0;
 		double hypotenuse = Math.sqrt(((heightOfFunnel * heightOfFunnel) + (opposite_leg * opposite_leg)));
 		double alpha = Math.asin((opposite_leg / hypotenuse));
 		double angleToLeftLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.SUBTRACTING);
 		double angleToRightLimes = GeoCalculations.addOrSubtractAzimuth(cog, alpha, MathematicalOperation.ADDING);
-		
+
 		Point2D leftPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToLeftLimes);
-		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, angleToRightLimes);
-		
+		Point2D rightPointOfFunnel = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse,
+				angleToRightLimes);
+
 		Coordinate leftPoint = new Coordinate(leftPointOfFunnel.getX(), leftPointOfFunnel.getY());
 		Coordinate rightPoint = new Coordinate(rightPointOfFunnel.getX(), rightPointOfFunnel.getY());
-		
-		
-		Coordinate[] coords = new Coordinate[]{vesselPosition, leftPoint, rightPoint, vesselPosition};
+
+		Coordinate[] coords = new Coordinate[] { vesselPosition, leftPoint, rightPoint, vesselPosition };
 		Geometry geo = geometryFactory.createPolygon(coords);
-		
-		
+
 		List<Node> list = new ArrayList<Node>();
 		list = deepSearch(geo.getEnvelopeInternal(), root, list);
-		
-		return (ArrayList<Node>)list;
+
+		return (ArrayList<Node>) list;
 	}
-	
+
 	/**
 	 * 
-	 * finds the nearest nodes to the given coordinate in the road network that is lying in the bounding box around of the vessel
+	 * finds the nearest nodes to the given coordinate in the road network that
+	 * is lying in the bounding box around of the vessel
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity the nearest node should be found
-	 * @param diameter width of bounding box to check for nodes
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity the nearest
+	 *            node should be found
+	 * @param diameter
+	 *            width of bounding box to check for nodes
 	 * @return list of nodes in a boundingbox around the vessel
 	 */
 	public ArrayList<Node> findNearestRoadNetworkNodesInRange(Coordinate vesselPosition, double diameter) {
-		
+
 		double hypotenuse = (Math.sin(Math.toRadians(45.0)) * diameter) / 2.0;
-		
+
 		Point2D minPoint = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, 225.0);
 		Point2D maxPoint = GeoCalculations.calculateNewPosition(vesselPosition, hypotenuse, 45.0);
-		
+
 		Coordinate leftLowerCorner = new Coordinate(minPoint.getX(), minPoint.getY());
 		Coordinate rightUpperCorner = new Coordinate(maxPoint.getX(), maxPoint.getY());
-		
+
 		Envelope boundingBox = new Envelope(leftLowerCorner, rightUpperCorner);
-		
+
 		List<Node> list = new ArrayList<Node>();
 		list = deepSearch(boundingBox, root, list);
-		
-		return (ArrayList<Node>)list;
+
+		return (ArrayList<Node>) list;
 	}
 
 	/**
 	 * 
 	 * finds the nearest edge in the road network to the given coordinate
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity the nearest edge should be found
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity the nearest
+	 *            edge should be found
 	 * @return nearest edge to vessel position
 	 */
+	@SuppressWarnings("unchecked")
 	public Edge findNearestEdge(Coordinate vesselPosition) {
-		
-		//TODO in direction
+
+		// TODO in direction
 		List<Edge> edges = findNearestRoadNetworkNode(vesselPosition).getEdges();
-		
-		if(edges.isEmpty()){
+
+		if (edges.isEmpty()) {
 			return null;
-		}else if(edges.size() == 1) {
+		} else if (edges.size() == 1) {
 			return edges.get(0);
-		}else{
-			//TODO difference to "else if"
+		} else {
+			// TODO difference to "else if"
 			return edges.get(0);
 		}
 	}
-	
+
 	/**
 	 * 
-	 * finds the nearest edges that are lying in the bounding box around the vessel
+	 * finds the nearest edges that are lying in the bounding box around the
+	 * vessel
 	 * 
-	 * @param vesselPosition {@link Coordinate} of vessel in which proximity the nearest edges should be found
-	 * @param diameter width of bounding box around the vessel to check for edges
+	 * @param vesselPosition
+	 *            {@link Coordinate} of vessel in which proximity the nearest
+	 *            edges should be found
+	 * @param diameter
+	 *            width of bounding box around the vessel to check for edges
 	 * @return list of edges in the bounding box around the vessel
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Edge> findNearestEdges(Coordinate vesselPosition, double diameter) {
-		
+
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		ArrayList<Node> nearestNodesInRange = findNearestRoadNetworkNodesInRange(vesselPosition, diameter);
-		
-		for(Node node : nearestNodesInRange) {
+
+		for (Node node : nearestNodesInRange) {
 			List<Edge> nodeEdges = node.getEdges();
-			for(Edge edge : nodeEdges) {
+			for (Edge edge : nodeEdges) {
 				edges.add(edge);
 			}
 		}
 		return edges;
 	}
-	
+
 	public int getMaxElementsPerNode() {
 		return this.maxElementsPerNode;
 	}
@@ -275,11 +304,11 @@ public class RoadNetworkQuadtree {
 	public int getMaxLevel() {
 		return this.maxLevel;
 	}
-	
+
 	public Node getRoadNetworkNode(int i) {
 		return store.get(i);
 	}
-	
+
 	private void traverseTree(QuadtreeNode node, Node roadNetworkNode) {
 		if (!node.intersectRoadNetworkNode(roadNetworkNode)) {
 			return;
@@ -296,7 +325,7 @@ public class RoadNetworkQuadtree {
 			}
 		}
 	}
-	
+
 	private List<Node> deepSearch(Envelope env, QuadtreeNode node, List<Node> list) {
 		if (!node.intersectFeature(env)) {
 			return list;
@@ -310,7 +339,7 @@ public class RoadNetworkQuadtree {
 		}
 		return list;
 	}
-	
+
 	private List<Node> deepSearchSingleNode(Envelope env, QuadtreeNode node, List<Node> list) {
 		if (!node.intersectFeature(env)) {
 			return list;
@@ -324,5 +353,5 @@ public class RoadNetworkQuadtree {
 		}
 		return list;
 	}
-	
+
 }

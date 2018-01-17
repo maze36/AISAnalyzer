@@ -26,18 +26,23 @@ import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Reads in a .shp file of a road network.
+ * 
  * @author msteidel
  *
  */
 public class ShapefileReader {
 
 	/**
-	 * Reads in a shapefile and extracts the {@link Geometry} that is contained in the file.
-	 * @param locationOfShapefile The location of the shapefile. File has to end with .shp
-	 * @return An {@link ArrayList} that contains the {@link Geometry} of the shapefile.
+	 * Reads in a shape file and extracts the {@link Geometry} that is contained
+	 * in the file.
+	 * 
+	 * @param locationOfShapefile
+	 *            The location of the shape file. File has to end with .shp
+	 * @return An {@link ArrayList} that contains the {@link Geometry} of the
+	 *         shape file.
 	 */
 	public static ArrayList<Geometry> readInShapefile(String locationOfShapefile) {
-		
+
 		File shapefile = getFile(locationOfShapefile);
 
 		HashMap<String, URL> connect = new HashMap<String, URL>();
@@ -73,9 +78,9 @@ public class ShapefileReader {
 			return null;
 		}
 	}
-	
+
 	private static File getFile(String path) {
 		return new File(path);
 	}
-	
+
 }

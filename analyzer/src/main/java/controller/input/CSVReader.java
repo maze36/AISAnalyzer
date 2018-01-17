@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -137,11 +138,30 @@ public class CSVReader {
 					}
 				}
 			}
+
+			for (Vessel vessel : vesselContainer.getList()) {
+				ArrayList<Track> updatedTracks = cleanTrackList(vessel.getTracks());
+				vessel.getTracks().clear();
+				vessel.setTracks(updatedTracks);
+			}
+
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	private static ArrayList<Track> cleanTrackList(ArrayList<Track> tracks) {
+		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
+		for (Track track : tracks) {
+			long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
+			if (intervalLenght < 1200000) {
+				tracksToRemove.add(track);
+			}
+		}
+		tracks.removeAll(tracksToRemove);
+		return tracks;
 	}
 
 	/**
