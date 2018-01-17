@@ -40,7 +40,7 @@ public class VesselContainer {
 
 	public boolean vesselExists(Vessel vessel) {
 		for (Vessel v : this.vesselContainer) {
-			if (v.getMmsi() == vessel.getMmsi()) {
+			if (v.getMmsi().intValue() == vessel.getMmsi().intValue()) {
 				return true;
 			}
 		}
@@ -53,7 +53,7 @@ public class VesselContainer {
 
 	public boolean vesselExists(Integer mmsi) {
 		for (Vessel v : this.vesselContainer) {
-			if (v.getMmsi() == mmsi) {
+			if (v.getMmsi().intValue() == mmsi.intValue()) {
 				return true;
 			}
 		}

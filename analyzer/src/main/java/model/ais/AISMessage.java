@@ -26,6 +26,8 @@ public class AISMessage {
 
 	private double rot;
 
+	private String destination;
+
 	public AISMessage() {
 
 	}
@@ -102,6 +104,14 @@ public class AISMessage {
 
 	public void setRot(double rot) {
 		this.rot = rot;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
 }

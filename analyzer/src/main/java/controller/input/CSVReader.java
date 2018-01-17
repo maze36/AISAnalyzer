@@ -101,7 +101,7 @@ public class CSVReader {
 	 * @param vesselContainer
 	 * @return True if successful, otherwise false.
 	 */
-	public static boolean readDynamicAISMessage(String csvLocation, VesselContainer vesselContainer) {
+	public static VesselContainer readDynamicAISMessage(String csvLocation, VesselContainer vesselContainer) {
 
 		try {
 			@SuppressWarnings("resource")
@@ -109,27 +109,34 @@ public class CSVReader {
 
 			while ((LINE = reader.readLine()) != null) {
 				String[] aisMessage = LINE.split(SPLITTER);
-				Integer mmsi = Integer.valueOf(aisMessage[0].replaceAll("\"", ""));
-				double heading = Double.valueOf(aisMessage[1].replaceAll("\"", ""));
-				double sog = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
-				double cog = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
-				double rot = Double.valueOf(aisMessage[4].replaceAll("\"", ""));
-				Date timestamp = transformDate(aisMessage[6].replaceAll("\"", ""));
-				double lat = Double.valueOf(aisMessage[7].replaceAll("\"", ""));
-				double lon = Double.valueOf(aisMessage[8].replaceAll("\"", ""));
+				if (!aisMessage[0].contains("mmsi")) {
 
-				AISMessage message = new AISMessage(mmsi, cog, sog, lat, lon, timestamp, rot, heading);
+					Integer mmsi = Integer.valueOf(aisMessage[0].replaceAll("\"", ""));
+					double heading = Double.valueOf(aisMessage[1].replaceAll("\"", ""));
+					double sog = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
+					double cog = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
+					double rot = Double.valueOf(aisMessage[4].replaceAll("\"", ""));
+					Date timestamp = transformDate(aisMessage[6].replaceAll("\"", ""));
+					double lat = Double.valueOf(aisMessage[7].replaceAll("\"", ""));
+					double lon = Double.valueOf(aisMessage[8].replaceAll("\"", ""));
 
-				for (Vessel vessel : vesselContainer.getList()) {
-					if (vessel.getMmsi() == message.getMmsi()) {
-						if (vessel.getTracks().isEmpty()) {
-							Track track = new Track(message);
-							vessel.getTracks().add(track);
-						} else {
-							for (Track track : vessel.getTracks()) {
-								if (track.messageBelongsToTrack(message.getTimestamp())) {
-									track.addMessage(message);
-								} else {
+					AISMessage message = new AISMessage(mmsi, cog, sog, lat, lon, timestamp, rot, heading);
+
+					for (Vessel vessel : vesselContainer.getList()) {
+						if (vessel.getMmsi().intValue() == message.getMmsi().intValue()) {
+							if (vessel.getTracks().isEmpty()) {
+								Track track = new Track(message);
+								vessel.getTracks().add(track);
+							} else {
+								boolean trackFound = false;
+								for (Track track : vessel.getTracks()) {
+									if (track.messageBelongsToTrack(message.getTimestamp())) {
+										track.addMessage(message);
+										trackFound = true;
+										break;
+									}
+								}
+								if (!trackFound) {
 									Track newTrack = new Track(message);
 									vessel.getTracks().add(newTrack);
 								}
@@ -145,10 +152,10 @@ public class CSVReader {
 				vessel.setTracks(updatedTracks);
 			}
 
-			return true;
+			return vesselContainer;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 
@@ -191,8 +198,9 @@ public class CSVReader {
 
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
 
-		String newDateString = timestampString.replace(timestampString.charAt(0), ' ');
-		newDateString = newDateString.replaceAll(" ", "");
+		// String newDateString =
+		// timestampString.replace(timestampString.charAt(0), ' ');
+		String newDateString = timestampString.replaceAll(" ", "");
 
 		try {
 			Date result = df.parse(newDateString);

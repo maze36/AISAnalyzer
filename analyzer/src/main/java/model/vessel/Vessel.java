@@ -39,6 +39,7 @@ public class Vessel {
 		this.endDate = endDate;
 		this.imo = imo;
 		this.name = name;
+		this.tracks = new ArrayList<Track>();
 	}
 
 	public double getLength() {

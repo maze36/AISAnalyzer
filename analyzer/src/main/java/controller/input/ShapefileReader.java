@@ -12,6 +12,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.graph.build.line.BasicLineGraphGenerator;
+import org.geotools.graph.structure.Graph;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
@@ -23,6 +25,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineSegment;
 
 /**
  * Reads in a .shp file of a road network.
@@ -31,6 +34,20 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public class ShapefileReader {
+
+	public static Graph getRTM(String locationOfShapefile) {
+		ArrayList<Geometry> shapes = readInShapefile(locationOfShapefile);
+		BasicLineGraphGenerator gen = new BasicLineGraphGenerator();
+
+		for (Geometry geo : shapes) {
+			LineSegment segment = new LineSegment(geo.getCoordinates()[0], geo.getCoordinates()[1]);
+			gen.add(segment);
+		}
+
+		Graph graph = gen.getGraph();
+
+		return graph;
+	}
 
 	/**
 	 * Reads in a shape file and extracts the {@link Geometry} that is contained
@@ -41,7 +58,7 @@ public class ShapefileReader {
 	 * @return An {@link ArrayList} that contains the {@link Geometry} of the
 	 *         shape file.
 	 */
-	public static ArrayList<Geometry> readInShapefile(String locationOfShapefile) {
+	private static ArrayList<Geometry> readInShapefile(String locationOfShapefile) {
 
 		File shapefile = getFile(locationOfShapefile);
 
