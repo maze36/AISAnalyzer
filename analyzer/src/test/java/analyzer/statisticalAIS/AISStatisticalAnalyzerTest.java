@@ -25,6 +25,8 @@ public class AISStatisticalAnalyzerTest {
 	private final String csvLocationDynamicSmallFile = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/DynamicData.csv";
 	private final String csvLocationStaticSmallFile = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/voyageData.csv";
 	private final String locationOfShapefile = "C:/Users/Matthias/Downloads/RTM_MWotS_jun14/RTM_MWotS_jun14/RTM_MWotS_jun14_clean.shp";
+	private final String csvLocationDynamicRelative = "DynamicData.csv";
+	private final String csvLocationStaticRelative = "voyageData.csv";
 	private RoadNetworkQuadtree quadtree;
 
 	@Before

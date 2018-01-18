@@ -26,11 +26,9 @@ import model.vessel.VesselContainer;
 public class AnalyzerApp {
 
 	private static VesselContainer vesselContainer = new VesselContainer();
-	private final static String csvLocationDynamicBigFile = "C:/Users/Matthias/Desktop/historische Daten/dynamicData.csv";
-	private final static String csvLocationStaticBigFile = "C:/Users/Matthias/Desktop/historische Daten/staticData.csv";
-	private final static String csvLocationDynamicSmallFile = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/DynamicData.csv";
-	private final static String csvLocationStaticSmallFile = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/voyageData.csv";
-	private final static String locationOfShapefile = "C:/Users/Matthias/Downloads/RTM_MWotS_jun14/RTM_MWotS_jun14/RTM_MWotS_jun14_clean.shp";
+	private final static String csvLocationDynamicSmallFile = "historicData/dynamicData.csv";
+	private final static String csvLocationStaticSmallFile = "historicData/staticData.csv";
+	private final static String locationOfShapefile = "shapefile/RTM_MWotS_jun14_clean.shp";
 	private static RoadNetworkQuadtree quadtree;
 
 	public static void main(String[] args) {
