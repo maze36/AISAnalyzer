@@ -24,6 +24,8 @@ public class AISStaticalAnalyzer {
 	public StatisticalNodeContainer augmentNodes(RoadNetworkQuadtree roadNetwork, VesselContainer vesselContainer) {
 		// First step: find nearest node to ais
 
+		System.out.println("Starting to augment nodes");
+
 		StatisticalNodeContainer nodeContainer = new StatisticalNodeContainer();
 
 		for (Vessel vessel : vesselContainer.getList()) {
@@ -36,6 +38,8 @@ public class AISStaticalAnalyzer {
 				}
 			}
 		}
+
+		System.out.println("Finished augmenting nodes");
 
 		return nodeContainer;
 

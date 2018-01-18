@@ -22,6 +22,8 @@ public class CSVWriter {
 
 		// For each node a new file
 
+		System.out.println("Writing CSV files");
+
 		int counter = 0;
 
 		for (StatisticalNode node : nodeContainer.getNodeList()) {
@@ -35,6 +37,7 @@ public class CSVWriter {
 
 		}
 
+		System.out.println("Finished writing CSV files");
 		return true;
 
 	}

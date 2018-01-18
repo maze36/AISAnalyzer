@@ -3,7 +3,6 @@ package controller.input;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,8 +37,6 @@ public class ShapefileReader {
 
 	public static Graph getRTM(String locationOfShapefile) {
 
-		System.out.println("Reading shape file from " + locationOfShapefile);
-
 		ArrayList<Geometry> shapes = readInShapefile(locationOfShapefile);
 		BasicLineGraphGenerator gen = new BasicLineGraphGenerator();
 
@@ -52,7 +49,7 @@ public class ShapefileReader {
 
 		Graph graph = gen.getGraph();
 
-		System.out.println(new Timestamp(System.currentTimeMillis()) + "Finished building a graph from shape file");
+		System.out.println("Finished building a graph from shape file");
 
 		return graph;
 	}
@@ -67,6 +64,8 @@ public class ShapefileReader {
 	 *         shape file.
 	 */
 	private static ArrayList<Geometry> readInShapefile(String locationOfShapefile) {
+
+		System.out.println("Reading shape file from " + locationOfShapefile);
 
 		File shapefile = getFile(locationOfShapefile);
 
@@ -96,6 +95,7 @@ public class ShapefileReader {
 				}
 			}
 			iterator.close();
+			System.out.println("Finished reading shape file");
 			return result;
 
 		} catch (IOException | FactoryException | MismatchedDimensionException | TransformException e) {

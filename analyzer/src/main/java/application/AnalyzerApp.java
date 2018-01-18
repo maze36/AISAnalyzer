@@ -1,15 +1,20 @@
 package application;
 
+import java.sql.Timestamp;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.geotools.graph.structure.Graph;
 import org.geotools.graph.structure.Node;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import controller.analyzing.AISStaticalAnalyzer;
 import controller.input.CSVReader;
 import controller.input.ShapefileReader;
+import controller.output.CSVWriter;
 import model.quadtree.RoadNetworkQuadtree;
+import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
 
 /**
@@ -29,7 +34,20 @@ public class AnalyzerApp {
 	private static RoadNetworkQuadtree quadtree;
 
 	public static void main(String[] args) {
+		long currentTime = System.currentTimeMillis();
+		System.out.println("Startin app at " + new Timestamp(currentTime));
 		init();
+
+		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
+		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer);
+		CSVWriter.saveData(nodeContainer);
+
+		long endTime = System.currentTimeMillis();
+
+		long duration = endTime - currentTime;
+
+		System.out.println("Calculation finished at " + new Timestamp(endTime));
+		System.out.print("Duration in Minutes: " + TimeUnit.MILLISECONDS.toMinutes(duration));
 
 	}
 
@@ -40,6 +58,8 @@ public class AnalyzerApp {
 
 		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
+
+		System.out.println("Building Quadtree");
 
 		@SuppressWarnings("unchecked")
 		Iterator<Node> iterator = graph.getNodes().iterator();
