@@ -24,11 +24,13 @@ public class CSVWriter {
 
 		System.out.println("Writing CSV files");
 
+		File directory = createDirectory();
+
 		int counter = 0;
 
 		for (StatisticalNode node : nodeContainer.getNodeList()) {
 			try {
-				writeNodeToCSV(node, counter);
+				writeNodeToCSV(node, counter, directory);
 				counter++;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -43,12 +45,14 @@ public class CSVWriter {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static void writeNodeToCSV(StatisticalNode node, int counter) throws FileNotFoundException {
+	private static void writeNodeToCSV(StatisticalNode node, int counter, File directory) throws FileNotFoundException {
 
 		DecimalFormat decimalFormat = new DecimalFormat("###.##");
 
+		String dirPath = directory.getPath();
+
 		PrintWriter pw = new PrintWriter(
-				new File("StatisticalNode_" + "counter_" + node.getLat() + "_" + node.getLon() + ".csv"));
+				new File(dirPath + "/StatisticalNode_" + "counter_" + node.getLat() + "_" + node.getLon() + ".csv"));
 		StringBuilder sb = new StringBuilder();
 		sb.append("Category");
 		sb.append(',');
@@ -116,6 +120,16 @@ public class CSVWriter {
 		pw.write(sb.toString());
 		pw.close();
 
+	}
+
+	private static File createDirectory() {
+		File file = new File("Ergebnisse");
+
+		if (!file.exists()) {
+			file.mkdir();
+		}
+
+		return file;
 	}
 
 }

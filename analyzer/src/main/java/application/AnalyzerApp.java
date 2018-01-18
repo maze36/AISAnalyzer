@@ -36,19 +36,22 @@ public class AnalyzerApp {
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Startin app at " + new Timestamp(currentTime));
-		init();
 
-		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
-		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer);
-		CSVWriter.saveData(nodeContainer);
+		init();
+		runLogic();
 
 		long endTime = System.currentTimeMillis();
 
 		long duration = endTime - currentTime;
 
 		System.out.println("Calculation finished at " + new Timestamp(endTime));
-		System.out.print("Duration in Minutes: " + TimeUnit.MILLISECONDS.toMinutes(duration));
+		System.out.println("Total duration in seconds: " + TimeUnit.MILLISECONDS.toSeconds(duration));
+	}
 
+	public static void runLogic() {
+		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
+		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer);
+		CSVWriter.saveData(nodeContainer);
 	}
 
 	public static void init() {
