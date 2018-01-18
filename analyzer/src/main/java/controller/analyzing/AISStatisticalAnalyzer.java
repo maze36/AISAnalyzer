@@ -19,7 +19,7 @@ import model.vessel.VesselContainer;
  * @author msteidel
  *
  */
-public class AISStaticalAnalyzer {
+public class AISStatisticalAnalyzer {
 
 	public StatisticalNodeContainer augmentNodes(RoadNetworkQuadtree roadNetwork, VesselContainer vesselContainer) {
 		// First step: find nearest node to ais

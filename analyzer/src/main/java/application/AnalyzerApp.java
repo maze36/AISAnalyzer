@@ -9,7 +9,7 @@ import org.geotools.graph.structure.Node;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import controller.analyzing.AISStaticalAnalyzer;
+import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
 import controller.input.ShapefileReader;
 import controller.output.CSVWriter;
@@ -35,7 +35,7 @@ public class AnalyzerApp {
 
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
-		System.out.println("Startin app at " + new Timestamp(currentTime));
+		System.out.println("Starting app at " + new Timestamp(currentTime));
 
 		init();
 		runLogic();
@@ -49,7 +49,7 @@ public class AnalyzerApp {
 	}
 
 	public static void runLogic() {
-		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
+		AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
 		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer);
 		CSVWriter.saveData(nodeContainer);
 	}

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import controller.analyzing.AISStaticalAnalyzer;
+import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
 import controller.input.ShapefileReader;
 import controller.output.CSVWriter;
@@ -45,7 +45,7 @@ public class AISStatisticalAnalyzerTest {
 
 	@Test
 	public void testStatisticalAnalyzer() {
-		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
+		AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
 
 		StatisticalNodeContainer resultContainer = analyzer.augmentNodes(quadtree, vesselContainer);
 		CSVWriter.saveData(resultContainer);
