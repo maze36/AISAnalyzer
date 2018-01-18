@@ -147,9 +147,16 @@ public class CSVReader {
 			}
 
 			for (Vessel vessel : vesselContainer.getList()) {
-				ArrayList<Track> updatedTracks = cleanTrackList(vessel.getTracks());
-				vessel.getTracks().clear();
-				vessel.setTracks(updatedTracks);
+				if (!vessel.getTracks().isEmpty()) {
+					ArrayList<Track> updatedTracks = cleanTrackList(vessel.getTracks());
+					vessel.setTracks(updatedTracks);
+				}
+			}
+			for (Vessel vessel : vesselContainer.getList()) {
+				if (!vessel.getTracks().isEmpty()) {
+					System.out.println();
+				}
+
 			}
 
 			return vesselContainer;

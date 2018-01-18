@@ -38,6 +38,8 @@ public class StatisticalNode {
 		this.sogDistribution = new HashMap<>();
 		this.shipTypeDistribution = new HashMap<>();
 		this.destinationDistribution = new HashMap<>();
+		this.lengthDistribution = new HashMap<>();
+		this.rotDistribution = new HashMap<>();
 		this.lat = lat;
 		this.lon = lon;
 	}

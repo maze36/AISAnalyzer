@@ -42,6 +42,7 @@ public class Track {
 	}
 
 	public boolean addMessage(AISMessage aisMessage) {
+		this.endDate = aisMessage.getTimestamp();
 		return this.aisMessages.add(aisMessage);
 	}
 

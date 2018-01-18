@@ -14,11 +14,12 @@ import controller.input.CSVReader;
 import controller.input.ShapefileReader;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNodeContainer;
+import model.vessel.Vessel;
 import model.vessel.VesselContainer;
 
 public class AISStatisticalAnalyzerTest {
 
-	private VesselContainer vesselContainer;
+	private VesselContainer vesselContainer = new VesselContainer();
 	private final String csvLocationDynamicBigFile = "C:/Users/Matthias/Desktop/historische Daten/dynamicData.csv";
 	private final String csvLocationStaticBigFile = "C:/Users/Matthias/Desktop/historische Daten/staticData.csv";
 	private final String csvLocationDynamicSmallFile = "C:/Users/Matthias/Desktop/historische Daten/historische AIS Daten/DynamicData.csv";
@@ -30,6 +31,14 @@ public class AISStatisticalAnalyzerTest {
 	public void init() {
 		this.vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticSmallFile);
 		this.vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicSmallFile, this.vesselContainer);
+
+		for (Vessel vessel : vesselContainer.getList()) {
+			if (!vessel.getTracks().isEmpty()) {
+				System.out.println();
+			}
+
+		}
+
 		this.quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
 
@@ -46,6 +55,7 @@ public class AISStatisticalAnalyzerTest {
 		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
 
 		StatisticalNodeContainer resultContainer = analyzer.augmentNodes(quadtree, vesselContainer);
+		System.out.println();
 
 	}
 }
