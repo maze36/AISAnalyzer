@@ -18,6 +18,10 @@ public class StatisticalNodeContainer {
 		this.statNodes = new ArrayList<StatisticalNode>();
 	}
 
+	public ArrayList<StatisticalNode> getNodeList() {
+		return this.statNodes;
+	}
+
 	public StatisticalNode getNode(int index) {
 		return this.statNodes.get(index);
 	}

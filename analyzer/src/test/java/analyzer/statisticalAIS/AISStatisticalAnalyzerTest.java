@@ -12,9 +12,9 @@ import com.vividsolutions.jts.geom.Envelope;
 import controller.analyzing.AISStaticalAnalyzer;
 import controller.input.CSVReader;
 import controller.input.ShapefileReader;
+import controller.output.CSVWriter;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNodeContainer;
-import model.vessel.Vessel;
 import model.vessel.VesselContainer;
 
 public class AISStatisticalAnalyzerTest {
@@ -32,13 +32,6 @@ public class AISStatisticalAnalyzerTest {
 		this.vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticSmallFile);
 		this.vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicSmallFile, this.vesselContainer);
 
-		for (Vessel vessel : vesselContainer.getList()) {
-			if (!vessel.getTracks().isEmpty()) {
-				System.out.println();
-			}
-
-		}
-
 		this.quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
 
@@ -55,7 +48,7 @@ public class AISStatisticalAnalyzerTest {
 		AISStaticalAnalyzer analyzer = new AISStaticalAnalyzer();
 
 		StatisticalNodeContainer resultContainer = analyzer.augmentNodes(quadtree, vesselContainer);
-		System.out.println();
+		CSVWriter.saveData(resultContainer);
 
 	}
 }

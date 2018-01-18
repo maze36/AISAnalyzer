@@ -39,6 +39,8 @@ public class CSVReader {
 	 */
 	public static VesselContainer readStaticAISMessages(String csvLocation) {
 
+		System.out.println("Reading static ais message from " + csvLocation);
+
 		VesselContainer result = new VesselContainer();
 
 		try {
@@ -81,6 +83,8 @@ public class CSVReader {
 					}
 				}
 			}
+			System.out.println("Finished reading static ais messages");
+
 			return result;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -102,6 +106,8 @@ public class CSVReader {
 	 * @return True if successful, otherwise false.
 	 */
 	public static VesselContainer readDynamicAISMessage(String csvLocation, VesselContainer vesselContainer) {
+
+		System.out.println("Reading dynamic ais messages from " + csvLocation);
 
 		try {
 			@SuppressWarnings("resource")
@@ -152,12 +158,8 @@ public class CSVReader {
 					vessel.setTracks(updatedTracks);
 				}
 			}
-			for (Vessel vessel : vesselContainer.getList()) {
-				if (!vessel.getTracks().isEmpty()) {
-					System.out.println();
-				}
 
-			}
+			System.out.println("Finished reading dynamic ais messages");
 
 			return vesselContainer;
 		} catch (IOException e) {

@@ -3,6 +3,7 @@ package controller.input;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,8 +37,13 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class ShapefileReader {
 
 	public static Graph getRTM(String locationOfShapefile) {
+
+		System.out.println("Reading shape file from " + locationOfShapefile);
+
 		ArrayList<Geometry> shapes = readInShapefile(locationOfShapefile);
 		BasicLineGraphGenerator gen = new BasicLineGraphGenerator();
+
+		System.out.println("Building a graph from shape file geometries");
 
 		for (Geometry geo : shapes) {
 			LineSegment segment = new LineSegment(geo.getCoordinates()[0], geo.getCoordinates()[1]);
@@ -45,6 +51,8 @@ public class ShapefileReader {
 		}
 
 		Graph graph = gen.getGraph();
+
+		System.out.println(new Timestamp(System.currentTimeMillis()) + "Finished building a graph from shape file");
 
 		return graph;
 	}
