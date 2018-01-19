@@ -26,7 +26,8 @@ import model.vessel.VesselContainer;
 public class CSVReader {
 
 	private static String LINE = "";
-	private final static String SPLITTER = ",";
+	private final static String AIS_SPLITTER = ",";
+	private final static String PORT_SPLITTER = ";";
 
 	/**
 	 * Reads a CSV file that contains static aisMessages. A
@@ -48,7 +49,7 @@ public class CSVReader {
 			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
 
 			while ((LINE = reader.readLine()) != null) {
-				String[] aisMessage = LINE.split(SPLITTER);
+				String[] aisMessage = LINE.split(AIS_SPLITTER);
 
 				// check if header
 				if (!aisMessage[0].contains("name")) {
@@ -114,7 +115,7 @@ public class CSVReader {
 			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
 
 			while ((LINE = reader.readLine()) != null) {
-				String[] aisMessage = LINE.split(SPLITTER);
+				String[] aisMessage = LINE.split(AIS_SPLITTER);
 				if (!aisMessage[0].contains("mmsi")) {
 
 					Integer mmsi = Integer.valueOf(aisMessage[0].replaceAll("\"", ""));
