@@ -60,6 +60,15 @@ public class VesselContainer {
 		return false;
 	}
 
+	public Vessel findVesselByMMSI(Integer mmsi) {
+		for (Vessel v : this.vesselContainer) {
+			if (v.getMmsi().intValue() == mmsi.intValue()) {
+				return v;
+			}
+		}
+		return null;
+	}
+
 	public ArrayList<Vessel> getList() {
 		return this.vesselContainer;
 	}

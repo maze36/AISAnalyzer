@@ -22,27 +22,22 @@ public class Vessel {
 
 	private Integer imo;
 
-	private Date firstDate;
-
-	private Date endDate;
-
 	private HashMap<String, Date> destinations;
 
 	public Vessel() {
 		this.tracks = new ArrayList<Track>();
+		this.destinations = new HashMap<>();
 	}
 
-	public Vessel(Integer mmsi, double length, double width, ShipType shipType, String name, Integer imo,
-			Date firstDate, Date endDate) {
+	public Vessel(Integer mmsi, double length, double width, ShipType shipType, String name, Integer imo) {
 		this.mmsi = mmsi;
 		this.length = length;
 		this.width = width;
 		this.shipType = shipType;
-		this.firstDate = firstDate;
-		this.endDate = endDate;
 		this.imo = imo;
 		this.name = name;
 		this.tracks = new ArrayList<Track>();
+		this.destinations = new HashMap<>();
 	}
 
 	public double getLength() {
@@ -85,14 +80,6 @@ public class Vessel {
 		this.tracks = tracks;
 	}
 
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -101,20 +88,12 @@ public class Vessel {
 		return imo;
 	}
 
-	public Date getFirstDate() {
-		return firstDate;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	public void setImo(Integer imo) {
 		this.imo = imo;
-	}
-
-	public void setFirstDate(Date firstDate) {
-		this.firstDate = firstDate;
 	}
 
 	public void addDestination(String port, Date timestamp) {

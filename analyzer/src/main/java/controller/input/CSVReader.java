@@ -62,13 +62,11 @@ public class CSVReader {
 						Integer mmsi = Integer.valueOf(aisMessage[1].replaceAll("\"", ""));
 						double length = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
 						double width = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
-						ShipType shipType = extractShipType(aisMessage[5].replaceAll("\"", ""));
-						Integer imo = Integer.valueOf(aisMessage[6].replaceAll("\"", ""));
-						Date firstDate = transformDate(aisMessage[7].replaceAll("\"", ""));
-						Date endDate = transformDate(aisMessage[8].replaceAll("\"", ""));
+						ShipType shipType = extractShipType(aisMessage[7].replaceAll("\"", ""));
+						Integer imo = Integer.valueOf(aisMessage[8].replaceAll("\"", ""));
 						Date timestamp = transformDate(aisMessage[9].replaceAll("\"", ""));
 						String destination = aisMessage[10].replaceAll("\"", "");
-						Vessel vessel = new Vessel(mmsi, length, width, shipType, name, imo, firstDate, endDate);
+						Vessel vessel = new Vessel(mmsi, length, width, shipType, name, imo);
 						vessel.addDestination(destination, timestamp);
 						result.addVessel(vessel);
 					} else {
@@ -79,12 +77,19 @@ public class CSVReader {
 							double length = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
 							double width = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
 							ShipType shipType = extractShipType(aisMessage[5].replaceAll("\"", ""));
-							Integer imo = Integer.valueOf(aisMessage[6].replaceAll("\"", ""));
-							Date firstDate = transformDate(aisMessage[7].replaceAll("\"", ""));
-							Date endDate = transformDate(aisMessage[8].replaceAll("\"", ""));
-
-							Vessel vessel = new Vessel(mmsi, length, width, shipType, name, imo, firstDate, endDate);
+							Integer imo = Integer.valueOf(aisMessage[8].replaceAll("\"", ""));
+							Date timestamp = transformDate(aisMessage[9].replaceAll("\"", ""));
+							String destination = aisMessage[10].replaceAll("\"", "");
+							Vessel vessel = new Vessel(mmsi, length, width, shipType, name, imo);
+							vessel.addDestination(destination, timestamp);
 							result.addVessel(vessel);
+						} else {
+							Vessel vessel = result.findVesselByMMSI(mmsi);
+							if (vessel != null) {
+								Date timestamp = transformDate(aisMessage[9].replaceAll("\"", ""));
+								String destination = aisMessage[10].replaceAll("\"", "");
+								vessel.addDestination(destination, timestamp);
+							}
 						}
 
 					}
@@ -165,6 +170,7 @@ public class CSVReader {
 				if (!vessel.getTracks().isEmpty()) {
 					ArrayList<Track> updatedTracks = cleanTrackList(vessel.getTracks());
 					vessel.setTracks(updatedTracks);
+					addDestinationsToTracks(vessel);
 				}
 			}
 
