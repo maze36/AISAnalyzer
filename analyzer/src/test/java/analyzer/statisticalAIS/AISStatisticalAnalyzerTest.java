@@ -1,22 +1,12 @@
 package analyzer.statisticalAIS;
 
-import java.util.Iterator;
-
-import org.geotools.graph.structure.Graph;
-import org.geotools.graph.structure.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vividsolutions.jts.geom.Envelope;
-
-import controller.analyzing.AISStatisticalAnalyzer;
-import controller.input.CSVReader;
-import controller.input.ShapefileReader;
-import controller.output.CSVWriter;
 import model.quadtree.RoadNetworkQuadtree;
-import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
 
+@SuppressWarnings("unused")
 public class AISStatisticalAnalyzerTest {
 
 	private VesselContainer vesselContainer = new VesselContainer();
@@ -31,26 +21,31 @@ public class AISStatisticalAnalyzerTest {
 
 	@Before
 	public void init() {
-		this.vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticSmallFile);
-		this.vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicSmallFile, this.vesselContainer);
-
-		this.quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
-		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
-
-		@SuppressWarnings("unchecked")
-		Iterator<Node> iterator = graph.getNodes().iterator();
-
-		while (iterator.hasNext()) {
-			quadtree.insert(iterator.next());
-		}
+		// this.vesselContainer =
+		// CSVReader.readStaticAISMessages(csvLocationStaticSmallFile);
+		// this.vesselContainer =
+		// CSVReader.readDynamicAISMessage(csvLocationDynamicSmallFile,
+		// this.vesselContainer);
+		//
+		// this.quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0,
+		// 100.0), 100, 100);
+		// Graph graph = ShapefileReader.getRTM(locationOfShapefile);
+		//
+		// @SuppressWarnings("unchecked")
+		// Iterator<Node> iterator = graph.getNodes().iterator();
+		//
+		// while (iterator.hasNext()) {
+		// quadtree.insert(iterator.next());
+		// }
 	}
 
 	@Test
 	public void testStatisticalAnalyzer() {
-		AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
-
-		StatisticalNodeContainer resultContainer = analyzer.augmentNodes(quadtree, vesselContainer);
-		CSVWriter.saveData(resultContainer);
+		// AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
+		//
+		// StatisticalNodeContainer resultContainer =
+		// analyzer.augmentNodes(quadtree, vesselContainer);
+		// CSVWriter.saveData(resultContainer);
 
 	}
 }

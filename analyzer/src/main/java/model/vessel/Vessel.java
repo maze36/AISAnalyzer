@@ -2,6 +2,7 @@ package model.vessel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import model.track.Track;
 
@@ -24,6 +25,8 @@ public class Vessel {
 	private Date firstDate;
 
 	private Date endDate;
+
+	private HashMap<String, Date> destinations;
 
 	public Vessel() {
 		this.tracks = new ArrayList<Track>();
@@ -112,6 +115,18 @@ public class Vessel {
 
 	public void setFirstDate(Date firstDate) {
 		this.firstDate = firstDate;
+	}
+
+	public void addDestination(String port, Date timestamp) {
+		this.destinations.put(port, timestamp);
+	}
+
+	public HashMap<String, Date> getDestinations() {
+		return destinations;
+	}
+
+	public void setDestinations(HashMap<String, Date> destinations) {
+		this.destinations = destinations;
 	}
 
 }

@@ -10,6 +10,7 @@ import controller.input.ShapefileReader;
 
 public class ShapefileReaderTest {
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testShapefileReader() {
 		String path = "C:/Users/Matthias/Downloads/RTM_MWotS_jun14/RTM_MWotS_jun14/RTM_MWotS_jun14_clean.shp";

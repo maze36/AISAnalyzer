@@ -18,6 +18,10 @@ public class PortContainer {
 		return this.ports;
 	}
 
+	public boolean addPort(Port port) {
+		return this.ports.add(port);
+	}
+
 	public ArrayList<Port> findPortsByCountry(String country) {
 
 		ArrayList<Port> result = new ArrayList<Port>();
@@ -46,6 +50,10 @@ public class PortContainer {
 			}
 		}
 		return null;
+	}
+
+	public boolean isEmpty() {
+		return this.ports.isEmpty();
 	}
 
 }

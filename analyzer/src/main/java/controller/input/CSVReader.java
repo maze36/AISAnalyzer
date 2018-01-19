@@ -9,9 +9,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import model.ais.AISMessage;
+import model.port.Port;
+import model.port.PortContainer;
 import model.track.Track;
 import model.vessel.ShipType;
 import model.vessel.Vessel;
@@ -38,7 +42,7 @@ public class CSVReader {
 	 *            The path of the CSV file.
 	 * @return
 	 */
-	public static VesselContainer readStaticAISMessages(String csvLocation) {
+	public static VesselContainer readStaticAISMessages(String csvLocation, PortContainer ports) {
 
 		System.out.println("Reading static ais message from " + csvLocation);
 
@@ -62,8 +66,10 @@ public class CSVReader {
 						Integer imo = Integer.valueOf(aisMessage[6].replaceAll("\"", ""));
 						Date firstDate = transformDate(aisMessage[7].replaceAll("\"", ""));
 						Date endDate = transformDate(aisMessage[8].replaceAll("\"", ""));
-
+						Date timestamp = transformDate(aisMessage[9].replaceAll("\"", ""));
+						String destination = aisMessage[10].replaceAll("\"", "");
 						Vessel vessel = new Vessel(mmsi, length, width, shipType, name, imo, firstDate, endDate);
+						vessel.addDestination(destination, timestamp);
 						result.addVessel(vessel);
 					} else {
 						Integer mmsi = Integer.valueOf(aisMessage[1].replaceAll("\"", ""));
@@ -109,6 +115,8 @@ public class CSVReader {
 	public static VesselContainer readDynamicAISMessage(String csvLocation, VesselContainer vesselContainer) {
 
 		System.out.println("Reading dynamic ais messages from " + csvLocation);
+
+		// TODO find Port for Track
 
 		try {
 			@SuppressWarnings("resource")
@@ -169,6 +177,65 @@ public class CSVReader {
 		}
 	}
 
+	public static PortContainer readPortList(String csvLocation) {
+		PortContainer container = new PortContainer();
+
+		System.out.println("Reading port list " + csvLocation);
+
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] row = LINE.split(PORT_SPLITTER);
+				if (!row[0].contains("Harbour")) {
+					String harbourName = row[0];
+					String country = row[1];
+					double lat = Double.valueOf(row[2]);
+					double lon = Double.valueOf(row[3]);
+					String unctad = row[4];
+					String alias = row[5];
+
+					container.addPort(new Port(lat, lon, country, unctad, alias, harbourName));
+
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Finished reading port list");
+
+		return container;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static Vessel addDestinationsToTracks(Vessel vessel) {
+		for (Track track : vessel.getTracks()) {
+			Iterator it = vessel.getDestinations().entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				Date dateOfDestination = (Date) pair.getValue();
+				if (isInInterval(track.getStartDate(), track.getEndDate(), dateOfDestination)) {
+					track.setDestination((String) pair.getKey());
+				}
+			}
+		}
+		return vessel;
+	}
+
+	private static boolean isInInterval(Date start, Date end, Date check) {
+		long timeStart = start.getTime();
+		long timeEnd = end.getTime();
+		long timeDate = check.getTime();
+
+		if (timeStart <= timeDate && timeDate <= timeEnd) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private static ArrayList<Track> cleanTrackList(ArrayList<Track> tracks) {
 		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
 		for (Track track : tracks) {
@@ -208,8 +275,6 @@ public class CSVReader {
 
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
 
-		// String newDateString =
-		// timestampString.replace(timestampString.charAt(0), ' ');
 		String newDateString = timestampString.replaceAll(" ", "");
 
 		try {

@@ -13,6 +13,8 @@ public class Track {
 
 	private ArrayList<AISMessage> aisMessages;
 
+	private String destination;
+
 	public Track(AISMessage aisMessage) {
 		this.aisMessages = new ArrayList<AISMessage>();
 		this.aisMessages.add(aisMessage);
@@ -68,6 +70,14 @@ public class Track {
 
 	public void setAisMessages(ArrayList<AISMessage> aisMessages) {
 		this.aisMessages = aisMessages;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
 }

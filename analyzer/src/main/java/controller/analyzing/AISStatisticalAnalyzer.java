@@ -5,6 +5,7 @@ import org.geotools.graph.structure.Node;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import model.ais.AISMessage;
+import model.port.PortContainer;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNode;
 import model.statistics.StatisticalNodeContainer;
@@ -21,7 +22,8 @@ import model.vessel.VesselContainer;
  */
 public class AISStatisticalAnalyzer {
 
-	public StatisticalNodeContainer augmentNodes(RoadNetworkQuadtree roadNetwork, VesselContainer vesselContainer) {
+	public StatisticalNodeContainer augmentNodes(RoadNetworkQuadtree roadNetwork, VesselContainer vesselContainer,
+			PortContainer portContainer) {
 		// First step: find nearest node to ais
 
 		System.out.println("Starting to augment nodes");

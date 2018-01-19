@@ -13,6 +13,7 @@ import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
 import controller.input.ShapefileReader;
 import controller.output.CSVWriter;
+import model.port.PortContainer;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
@@ -26,15 +27,16 @@ import model.vessel.VesselContainer;
 public class AnalyzerApp {
 
 	private static VesselContainer vesselContainer = new VesselContainer();
-	private final static String csvLocationDynamicSmallFile = "historicData/dynamicData.csv";
-	private final static String csvLocationStaticSmallFile = "historicData/staticData.csv";
+	private static PortContainer portContainer = new PortContainer();
+	private final static String csvLocationDynamicFile = "historicData/dynamicData.csv";
+	private final static String csvLocationStaticFile = "historicData/staticData.csv";
+	private final static String csvLocationPortFile = "portList/portList.csv";
 	private final static String locationOfShapefile = "shapefile/RTM_MWotS_jun14_clean.shp";
 	private static RoadNetworkQuadtree quadtree;
 
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Starting app at " + new Timestamp(currentTime));
-
 		init();
 		runLogic();
 
@@ -48,14 +50,14 @@ public class AnalyzerApp {
 
 	public static void runLogic() {
 		AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
-		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer);
+		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer, portContainer);
 		CSVWriter.saveData(nodeContainer);
 	}
 
 	public static void init() {
-
-		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticSmallFile);
-		vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicSmallFile, vesselContainer);
+		portContainer = CSVReader.readPortList(csvLocationPortFile);
+		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
+		vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicFile, vesselContainer);
 
 		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
