@@ -69,6 +69,9 @@ public class Port {
 		this.harbourName = harbourName;
 	}
 
+	public Port() {
+	}
+
 	public String getHarbourName() {
 		return harbourName;
 	}

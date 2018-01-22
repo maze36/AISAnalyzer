@@ -200,7 +200,7 @@ public class CSVReader {
 					double lat = Double.valueOf(row[2]);
 					double lon = Double.valueOf(row[3]);
 					String unctad = row[4];
-					String alias = row[5];
+					String alias = extractAlias(row[5]);
 
 					container.addPort(new Port(lat, lon, country, unctad, alias, harbourName));
 
@@ -213,6 +213,14 @@ public class CSVReader {
 		System.out.println("Finished reading port list");
 
 		return container;
+	}
+
+	private static String extractAlias(String alias) {
+
+		int openBracket = alias.indexOf("(");
+		int closeBracket = alias.indexOf(")");
+
+		return alias.substring(openBracket + 1, closeBracket);
 	}
 
 	@SuppressWarnings("rawtypes")
