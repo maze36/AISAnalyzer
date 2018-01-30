@@ -16,7 +16,7 @@ public class SimilarityTests {
 
 		String s1 = "BREMERHAVEN    ";
 		String s2 = "BREMERHAVEM  ";
-		String s3 = "PLGDY";
+		String s3 = "PLGDY,";
 		String s4 = "BREMERHEAVEN";
 		String s5 = "BREMEN";
 		String s6 = "BREMERHAVVENJF";
