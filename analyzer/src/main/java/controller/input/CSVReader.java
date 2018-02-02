@@ -166,6 +166,7 @@ public class CSVReader {
 				}
 			}
 
+			System.out.println("Adding destinations to tracks...");
 			for (Vessel vessel : vesselContainer.getList()) {
 				if (!vessel.getTracks().isEmpty()) {
 					ArrayList<Track> updatedTracks = cleanTrackList(vessel.getTracks());

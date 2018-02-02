@@ -132,6 +132,13 @@ public class StatisticalNode {
 			this.rotDistribution.put(String.valueOf(message.getRot()), new Double(1));
 		}
 
+		if (numberDestinationDistribution != null) {
+			numberDestinationDistribution = numberDestinationDistribution + 1;
+			this.destinationDistribution.put(message.getDestination(), numberDestinationDistribution);
+		} else {
+			this.destinationDistribution.put(message.getDestination(), new Double(1));
+		}
+
 	}
 
 }

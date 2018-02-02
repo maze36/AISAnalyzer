@@ -14,12 +14,7 @@ public class SimilarityTests {
 
 		PortContainer container = CSVReader.readPortList("portList/portList.csv");
 
-		String s1 = "BREMERHAVEN    ";
-		String s2 = "BREMERHAVEM  ";
-		String s3 = "PLGDY";
-		String s4 = "BREMERHEAVEN";
-		String s5 = "BREMEN";
-		String s6 = "BREMERHAVVENJF";
+		String s3 = "PLGDY,";
 
 		Port result = DestinationIdentifier.identifyHarbour(s3, container);
 

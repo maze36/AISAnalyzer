@@ -1,5 +1,8 @@
 package controller.input.stringSimilarity;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import info.debatty.java.stringsimilarity.Damerau;
 import model.port.Port;
 import model.port.PortContainer;
@@ -8,30 +11,52 @@ public class DestinationIdentifier {
 
 	public static Port identifyHarbour(String ais, PortContainer portContainer) {
 
-		double minDistance = -1;
-
+		boolean hasSpecial = hasSpecialCharacters(ais);
 		Port result = new Port();
 
-		String compare = ais.toLowerCase().trim();
+		if (!hasSpecial) {
+			double minDistance = -1;
 
-		for (Port port : portContainer.getPorts()) {
+			String compare = ais.toLowerCase().trim();
 
-			double distanceName = compareStringsWithDamerau(port.getHarbourName().toLowerCase(), compare);
-			double distanceAlias = compareStringsWithDamerau(port.getAlias().toLowerCase().trim(), compare);
+			for (Port port : portContainer.getPorts()) {
 
-			if (minDistance == -1) {
-				minDistance = distanceName;
-				result = port;
-			} else if (minDistance > distanceName && distanceName < distanceAlias) {
-				minDistance = distanceName;
-				result = port;
-			} else if (minDistance > distanceAlias && distanceAlias < distanceName) {
-				minDistance = distanceAlias;
-				result = port;
+				double distanceName = compareStringsWithDamerau(port.getHarbourName().toLowerCase(), compare);
+				double distanceAlias = compareStringsWithDamerau(port.getAlias().toLowerCase().trim(), compare);
+
+				if (minDistance == -1) {
+					minDistance = distanceName;
+					result = port;
+				} else if (minDistance > distanceName && distanceName < distanceAlias) {
+					minDistance = distanceName;
+					result = port;
+				} else if (minDistance > distanceAlias && distanceAlias < distanceName) {
+					minDistance = distanceAlias;
+					result = port;
+				}
+
 			}
 
 		}
+
 		return result;
+	}
+
+	private static boolean hasSpecialCharacters(String ais) {
+
+		Pattern special = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]'");
+		Pattern digit = Pattern.compile("[0-9]");
+		boolean dots = ais.contains(".");
+		boolean commas = ais.contains(",");
+		Matcher hasSpecial = special.matcher(ais);
+		Matcher hasDigit = digit.matcher(ais);
+
+		if (hasSpecial.find() || hasDigit.find() || dots || commas) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	private static double compareStringsWithDamerau(String string1, String string2) {
