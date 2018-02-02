@@ -10,13 +10,13 @@ import org.geotools.graph.structure.Node;
 import com.vividsolutions.jts.geom.Envelope;
 
 import controller.analyzing.AISStatisticalAnalyzer;
-import controller.input.CSVReader;
 import controller.input.ShapefileReader;
 import controller.output.CSVWriter;
 import model.port.PortContainer;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
+import view.MapWindow;
 
 /**
  * Run this class in order to start the application.
@@ -38,7 +38,8 @@ public class AnalyzerApp {
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Starting app at " + new Timestamp(currentTime));
 		init();
-		runLogic();
+		// runLogic();
+		startView();
 
 		long endTime = System.currentTimeMillis();
 
@@ -48,6 +49,11 @@ public class AnalyzerApp {
 		System.out.println("Total duration in seconds: " + TimeUnit.MILLISECONDS.toSeconds(duration));
 	}
 
+	private static void startView() {
+		MapWindow mainWindow = new MapWindow(quadtree);
+
+	}
+
 	public static void runLogic() {
 		AISStatisticalAnalyzer analyzer = new AISStatisticalAnalyzer();
 		StatisticalNodeContainer nodeContainer = analyzer.augmentNodes(quadtree, vesselContainer, portContainer);
@@ -55,9 +61,13 @@ public class AnalyzerApp {
 	}
 
 	public static void init() {
-		portContainer = CSVReader.readPortList(csvLocationPortFile);
-		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
-		vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicFile, vesselContainer);
+		// portContainer = CSVReader.readPortList(csvLocationPortFile);
+		// vesselContainer =
+		// CSVReader.readStaticAISMessages(csvLocationStaticFile,
+		// portContainer);
+		// vesselContainer =
+		// CSVReader.readDynamicAISMessage(csvLocationDynamicFile,
+		// vesselContainer);
 
 		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);

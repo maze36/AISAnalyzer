@@ -24,16 +24,13 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import model.quadtree.RoadNetworkQuadtree;
 
-
-
-
 public class WorldMap {
 
 	public JPanel getWorldMap(RoadNetworkQuadtree quadtree) {
 		TileFactoryInfo info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 		tileFactory.setThreadPoolSize(8);
-		
+
 		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
 		LocalResponseCache.installResponseCache(info.getBaseURL(), cacheDir, false);
 
@@ -41,15 +38,14 @@ public class WorldMap {
 		mapViewer.setTileFactory(tileFactory);
 
 		Set<NodeLabel> nodes = new HashSet<NodeLabel>();
-		
-		for(Node node: quadtree.getAllElements()) {
-			double lat = ((Coordinate)node.getObject()).x;
-			double lon = ((Coordinate)node.getObject()).y;
-			String position = "X_" + lat + "  Y_" + lon;
-			nodes.add(new NodeLabel(position, Color.CYAN, new GeoPosition(lat, lon)));
+
+		for (Node node : quadtree.getAllElements()) {
+			double lat = ((Coordinate) node.getObject()).x;
+			double lon = ((Coordinate) node.getObject()).y;
+			nodes.add(new NodeLabel("", Color.CYAN, new GeoPosition(lat, lon)));
 		}
-		
-		GeoPosition frankfurt = new GeoPosition(50,  7, 0, 8, 41, 0);
+
+		GeoPosition frankfurt = new GeoPosition(50, 7, 0, 8, 41, 0);
 
 		mapViewer.setZoom(10);
 		mapViewer.setAddressLocation(frankfurt);
@@ -62,16 +58,13 @@ public class WorldMap {
 		mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
 		mapViewer.addKeyListener(new PanKeyListener(mapViewer));
 
-
 		NodeLabelPainter<NodeLabel> nodeLabelPainter = new NodeLabelPainter<NodeLabel>();
 		nodeLabelPainter.setWaypoints(nodes);
 		nodeLabelPainter.setRenderer(new NodeLabelRenderer());
-		
+
 		mapViewer.setOverlayPainter(nodeLabelPainter);
-		
+
 		return mapViewer;
 	}
-	
-
 
 }
