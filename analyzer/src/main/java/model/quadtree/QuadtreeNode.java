@@ -241,4 +241,7 @@ public class QuadtreeNode {
 		return level;
 	}
 
+	public Envelope getArea() {
+		return this.area;
+	}
 }
