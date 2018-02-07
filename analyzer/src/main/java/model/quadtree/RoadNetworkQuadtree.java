@@ -296,6 +296,13 @@ public class RoadNetworkQuadtree {
 		}
 		return edges;
 	}
+	
+	public ArrayList<Node> getAllElements() {
+		
+		List<Node> elements = new ArrayList<Node>();
+		elements = deepSearch(root.getArea(), root, elements);
+		return (ArrayList<Node>) elements;
+	}
 
 	public int getMaxElementsPerNode() {
 		return this.maxElementsPerNode;
