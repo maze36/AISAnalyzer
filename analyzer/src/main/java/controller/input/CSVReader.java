@@ -13,9 +13,15 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import org.geotools.graph.structure.Node;
+
+import controller.analyzing.AISStatisticalAnalyzer;
+import controller.output.CSVWriter;
 import model.ais.AISMessage;
 import model.port.Port;
 import model.port.PortContainer;
+import model.quadtree.RoadNetworkQuadtree;
+import model.statistics.StatisticalNodeContainer;
 import model.track.Track;
 import model.vessel.ShipType;
 import model.vessel.Vessel;
@@ -76,7 +82,7 @@ public class CSVReader {
 							String name = aisMessage[0].replaceAll("\"", "");
 							double length = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
 							double width = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
-							ShipType shipType = extractShipType(aisMessage[5].replaceAll("\"", ""));
+							ShipType shipType = extractShipType(aisMessage[7].replaceAll("\"", ""));
 							Integer imo = Integer.valueOf(aisMessage[8].replaceAll("\"", ""));
 							Date timestamp = transformDate(aisMessage[9].replaceAll("\"", ""));
 							String destination = aisMessage[10].replaceAll("\"", "");
@@ -107,6 +113,47 @@ public class CSVReader {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static void readAndProcessDynamicAISMessages(String csvLocation, VesselContainer vesselContainer,
+			RoadNetworkQuadtree quadtree) {
+		System.out.println("Reading and processing dynamic ais messages from " + csvLocation);
+		StatisticalNodeContainer nodeContainer = new StatisticalNodeContainer();
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] aisMessage = LINE.split(AIS_SPLITTER);
+				if (!aisMessage[0].contains("mmsi")) {
+					Integer mmsi = Integer.valueOf(aisMessage[0].replaceAll("\"", ""));
+					double heading = Double.valueOf(aisMessage[1].replaceAll("\"", ""));
+					double sog = Double.valueOf(aisMessage[2].replaceAll("\"", ""));
+					double cog = Double.valueOf(aisMessage[3].replaceAll("\"", ""));
+					double rot = Double.valueOf(aisMessage[4].replaceAll("\"", ""));
+					Date timestamp = transformDate(aisMessage[6].replaceAll("\"", ""));
+					double lat = Double.valueOf(aisMessage[7].replaceAll("\"", ""));
+					double lon = Double.valueOf(aisMessage[8].replaceAll("\"", ""));
+
+					AISMessage message = new AISMessage(mmsi, cog, sog, lat, lon, timestamp, rot, heading);
+
+					for (Vessel vessel : vesselContainer.getList()) {
+						if (vessel.getMmsi().intValue() == message.getMmsi().intValue()) {
+							Node nearestNode = AISStatisticalAnalyzer.findNearestNode(quadtree, message);
+							if (nearestNode != null) {
+								AISStatisticalAnalyzer.addNodeToContainer(nearestNode, message, nodeContainer, vessel);
+							}
+						}
+					}
+				}
+			}
+
+			CSVWriter.saveData(nodeContainer);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

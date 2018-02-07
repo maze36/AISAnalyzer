@@ -47,7 +47,7 @@ public class AISStatisticalAnalyzer {
 
 	}
 
-	private void addNodeToContainer(Node nearestNode, AISMessage message, StatisticalNodeContainer nodeContainer,
+	public static void addNodeToContainer(Node nearestNode, AISMessage message, StatisticalNodeContainer nodeContainer,
 			Vessel vessel) {
 		Coordinate coordNearestNode = (Coordinate) nearestNode.getObject();
 		double lat = coordNearestNode.x;
@@ -70,9 +70,17 @@ public class AISStatisticalAnalyzer {
 
 	}
 
-	private Node findNearestNode(RoadNetworkQuadtree roadNetwork, AISMessage message) {
-		Coordinate vesselPosition = new Coordinate(message.getLat(), message.getLon());
-		double cog = message.getCog();
-		return roadNetwork.findNearestRoadNetworkNodeInDirection(vesselPosition, cog, 2, 2);
+	public static Node findNearestNode(RoadNetworkQuadtree roadNetwork, AISMessage message) {
+
+		double lat = message.getLat();
+		double lon = message.getLon();
+
+		if (!(lat > 90 || lat < -90) && !(lon > 180 || lon < -180)) {
+			Coordinate vesselPosition = new Coordinate(message.getLat(), message.getLon());
+			double cog = message.getCog();
+			return roadNetwork.findNearestRoadNetworkNodeInDirection(vesselPosition, cog, 2, 2);
+		}
+		return null;
+
 	}
 }

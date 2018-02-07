@@ -1,6 +1,9 @@
 package model.statistics;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import model.ais.AISMessage;
 import model.vessel.ShipType;
@@ -134,11 +137,44 @@ public class StatisticalNode {
 
 		if (numberDestinationDistribution != null) {
 			numberDestinationDistribution = numberDestinationDistribution + 1;
-			this.destinationDistribution.put(message.getDestination(), numberDestinationDistribution);
+			String destination = findDestination(message, vessel);
+			this.destinationDistribution.put(destination, numberDestinationDistribution);
+
 		} else {
-			this.destinationDistribution.put(message.getDestination(), new Double(1));
+			String destination = findDestination(message, vessel);
+			this.destinationDistribution.put(destination, new Double(1));
 		}
 
+	}
+
+	private String findDestination(AISMessage message, Vessel vessel) {
+		HashMap<String, Date> destinations = vessel.getDestinations();
+		long minTimeDiff = -1;
+		String result = "";
+		Iterator iterator = destinations.entrySet().iterator();
+		boolean firstIteration = true;
+		while (iterator.hasNext()) {
+			Map.Entry pair = (Map.Entry) iterator.next();
+
+			long timeMessage = message.getTimestamp().getTime();
+			Date timestampDest = (Date) pair.getValue();
+			long timeDest = timestampDest.getTime();
+
+			// min time
+
+			long timeDiff = Math.abs(timeDest - timeMessage);
+
+			if (firstIteration) {
+				minTimeDiff = timeDiff;
+				result = (String) pair.getKey();
+			} else if (minTimeDiff > timeDiff) {
+				minTimeDiff = timeDiff;
+				result = (String) pair.getKey();
+			}
+
+		}
+
+		return result;
 	}
 
 }

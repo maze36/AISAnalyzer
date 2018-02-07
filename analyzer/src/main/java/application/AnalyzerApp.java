@@ -38,7 +38,6 @@ public class AnalyzerApp {
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Starting app at " + new Timestamp(currentTime));
 		init();
-		runLogic();
 
 		long endTime = System.currentTimeMillis();
 
@@ -55,21 +54,19 @@ public class AnalyzerApp {
 	}
 
 	public static void init() {
-		portContainer = CSVReader.readPortList(csvLocationPortFile);
-		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
-		vesselContainer = CSVReader.readDynamicAISMessage(csvLocationDynamicFile, vesselContainer);
-
 		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
-
-		System.out.println("Building Quadtree");
-
 		@SuppressWarnings("unchecked")
 		Iterator<Node> iterator = graph.getNodes().iterator();
 
 		while (iterator.hasNext()) {
 			quadtree.insert(iterator.next());
 		}
+
+		System.out.println("Building Quadtree");
+		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
+		CSVReader.readAndProcessDynamicAISMessages(csvLocationDynamicFile, vesselContainer, quadtree);
+
 	}
 
 }
