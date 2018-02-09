@@ -78,7 +78,7 @@ public class AISStatisticalAnalyzer {
 		if (!(lat > 90 || lat < -90) && !(lon > 180 || lon < -180)) {
 			Coordinate vesselPosition = new Coordinate(message.getLat(), message.getLon());
 			double cog = message.getCog();
-			return roadNetwork.findNearestRoadNetworkNodeInDirection(vesselPosition, cog, 2, 2);
+			return roadNetwork.findNearestRoadNetworkNodeInDirection(vesselPosition, cog, 2, 2.5);
 		}
 		return null;
 

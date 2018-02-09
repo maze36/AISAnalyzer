@@ -17,7 +17,6 @@ import model.port.PortContainer;
 import model.quadtree.RoadNetworkQuadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
-import view.MapWindow;
 
 /**
  * Run this class in order to start the application.
@@ -46,11 +45,6 @@ public class AnalyzerApp {
 
 		System.out.println("Calculation finished at " + new Timestamp(endTime));
 		System.out.println("Total duration in seconds: " + TimeUnit.MILLISECONDS.toSeconds(duration));
-	}
-
-	private static void startView() {
-		MapWindow mainWindow = new MapWindow(quadtree);
-
 	}
 
 	public static void runLogic() {

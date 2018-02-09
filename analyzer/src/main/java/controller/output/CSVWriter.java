@@ -55,16 +55,16 @@ public class CSVWriter {
 				new File(dirPath + "/StatisticalNode_" + "counter_" + node.getLat() + "_" + node.getLon() + ".csv"));
 		StringBuilder sb = new StringBuilder();
 		sb.append("Category");
-		sb.append(',');
+		sb.append('+');
 		sb.append("Feature");
-		sb.append(',');
+		sb.append('+');
 		sb.append("Count");
 		sb.append('\n');
 
 		sb.append("Position");
-		sb.append(',');
+		sb.append('+');
 		sb.append(node.getLat());
-		sb.append(',');
+		sb.append('+');
 		sb.append(node.getLon());
 		sb.append('\n');
 
@@ -74,9 +74,9 @@ public class CSVWriter {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			sb.append("CogDistribution");
-			sb.append(',');
+			sb.append('+');
 			sb.append(decimalFormat.format(Double.valueOf((String) pair.getKey())));
-			sb.append(',');
+			sb.append('+');
 			sb.append(pair.getValue());
 			sb.append('\n');
 		}
@@ -86,9 +86,9 @@ public class CSVWriter {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			sb.append("ShipTypeDistribution");
-			sb.append(',');
+			sb.append('+');
 			sb.append(pair.getKey());
-			sb.append(',');
+			sb.append('+');
 			sb.append(pair.getValue());
 			sb.append('\n');
 		}
@@ -98,9 +98,9 @@ public class CSVWriter {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			sb.append("LengthDistribution");
-			sb.append(',');
+			sb.append('+');
 			sb.append(pair.getKey());
-			sb.append(',');
+			sb.append('+');
 			sb.append(pair.getValue());
 			sb.append('\n');
 		}
@@ -110,9 +110,21 @@ public class CSVWriter {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			sb.append("SOGDistribution");
-			sb.append(',');
+			sb.append('+');
 			sb.append(decimalFormat.format(Double.valueOf((String) pair.getKey())));
-			sb.append(',');
+			sb.append('+');
+			sb.append(pair.getValue());
+			sb.append('\n');
+		}
+
+		it = node.getDestinationDistribution().entrySet().iterator();
+
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			sb.append("Destinations");
+			sb.append('+');
+			sb.append(pair.getKey());
+			sb.append('+');
 			sb.append(pair.getValue());
 			sb.append('\n');
 		}
