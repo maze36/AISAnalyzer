@@ -15,12 +15,16 @@ import java.util.Map;
 
 import org.geotools.graph.structure.Node;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+
 import controller.analyzing.AISStatisticalAnalyzer;
 import controller.output.CSVWriter;
 import model.ais.AISMessage;
 import model.port.Port;
 import model.port.PortContainer;
 import model.quadtree.RoadNetworkQuadtree;
+import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.track.Track;
 import model.vessel.ShipType;
@@ -113,6 +117,33 @@ public class CSVReader {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Quadtree readHistoricNodes(String csvLocation) {
+		System.out.println("Reading historic nodes from " + csvLocation + " and saving them into a quadtree");
+
+		Quadtree tree = new Quadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
+
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocation));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] aisMessage = LINE.split(AIS_SPLITTER);
+				if (!aisMessage[0].contains("Feature")) {
+					Coordinate position = new Coordinate(Double.valueOf(aisMessage[0]), Double.valueOf(aisMessage[1]));
+
+					tree.insert(position);
+
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return tree;
+		}
+
+		return tree;
+
 	}
 
 	public static void readAndProcessDynamicAISMessages(String csvLocation, VesselContainer vesselContainer,

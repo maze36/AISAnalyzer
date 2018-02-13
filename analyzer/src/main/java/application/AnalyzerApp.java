@@ -55,6 +55,7 @@ public class AnalyzerApp {
 
 	public static void init() {
 
+		System.out.println("Building Quadtree");
 		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
 		@SuppressWarnings("unchecked")
@@ -64,7 +65,6 @@ public class AnalyzerApp {
 			quadtree.insert(iterator.next());
 		}
 
-		System.out.println("Building Quadtree");
 		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
 		CSVReader.readAndProcessDynamicAISMessages(csvLocationDynamicFile, vesselContainer, quadtree);
 
