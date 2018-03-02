@@ -13,8 +13,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import org.geotools.graph.structure.Node;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -23,7 +21,6 @@ import controller.output.CSVWriter;
 import model.ais.AISMessage;
 import model.port.Port;
 import model.port.PortContainer;
-import model.quadtree.RoadNetworkQuadtree;
 import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.track.Track;
@@ -80,6 +77,13 @@ public class CSVReader {
 						vessel.addDestination(destination, timestamp);
 						result.addVessel(vessel);
 					} else {
+
+						String sMmsi = aisMessage[1].replaceAll("\"", "");
+
+						if (sMmsi.equals("")) {
+							System.out.println();
+						}
+
 						Integer mmsi = Integer.valueOf(aisMessage[1].replaceAll("\"", ""));
 
 						if (!result.vesselExists(mmsi)) {
@@ -147,7 +151,7 @@ public class CSVReader {
 	}
 
 	public static void readAndProcessDynamicAISMessages(String csvLocation, VesselContainer vesselContainer,
-			RoadNetworkQuadtree quadtree) {
+			Quadtree quadtree) {
 		System.out.println("Reading and processing dynamic ais messages from " + csvLocation);
 		StatisticalNodeContainer nodeContainer = new StatisticalNodeContainer();
 		try {
@@ -170,7 +174,7 @@ public class CSVReader {
 
 					for (Vessel vessel : vesselContainer.getList()) {
 						if (vessel.getMmsi().intValue() == message.getMmsi().intValue()) {
-							Node nearestNode = AISStatisticalAnalyzer.findNearestNode(quadtree, message);
+							Coordinate nearestNode = AISStatisticalAnalyzer.findNearestNode(quadtree, message);
 							if (nearestNode != null) {
 								AISStatisticalAnalyzer.addNodeToContainer(nearestNode, message, nodeContainer, vessel);
 							}

@@ -1,12 +1,10 @@
 package controller.analyzing;
 
-import org.geotools.graph.structure.Node;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import model.ais.AISMessage;
 import model.port.PortContainer;
-import model.quadtree.RoadNetworkQuadtree;
+import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNode;
 import model.statistics.StatisticalNodeContainer;
 import model.track.Track;
@@ -22,7 +20,7 @@ import model.vessel.VesselContainer;
  */
 public class AISStatisticalAnalyzer {
 
-	public StatisticalNodeContainer augmentNodes(RoadNetworkQuadtree roadNetwork, VesselContainer vesselContainer,
+	public StatisticalNodeContainer augmentNodes(Quadtree roadNetwork, VesselContainer vesselContainer,
 			PortContainer portContainer) {
 		// First step: find nearest node to ais
 
@@ -33,7 +31,7 @@ public class AISStatisticalAnalyzer {
 		for (Vessel vessel : vesselContainer.getList()) {
 			for (Track track : vessel.getTracks()) {
 				for (AISMessage message : track.getAisMessages()) {
-					Node nearestNode = findNearestNode(roadNetwork, message);
+					Coordinate nearestNode = findNearestNode(roadNetwork, message);
 					if (nearestNode != null) {
 						addNodeToContainer(nearestNode, message, nodeContainer, vessel);
 					}
@@ -47,9 +45,9 @@ public class AISStatisticalAnalyzer {
 
 	}
 
-	public static void addNodeToContainer(Node nearestNode, AISMessage message, StatisticalNodeContainer nodeContainer,
-			Vessel vessel) {
-		Coordinate coordNearestNode = (Coordinate) nearestNode.getObject();
+	public static void addNodeToContainer(Coordinate nearestNode, AISMessage message,
+			StatisticalNodeContainer nodeContainer, Vessel vessel) {
+		Coordinate coordNearestNode = nearestNode;
 		double lat = coordNearestNode.x;
 		double lon = coordNearestNode.y;
 
@@ -70,7 +68,7 @@ public class AISStatisticalAnalyzer {
 
 	}
 
-	public static Node findNearestNode(RoadNetworkQuadtree roadNetwork, AISMessage message) {
+	public static Coordinate findNearestNode(Quadtree roadNetwork, AISMessage message) {
 
 		double lat = message.getLat();
 		double lon = message.getLon();

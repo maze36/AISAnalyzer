@@ -1,20 +1,13 @@
 package application;
 
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
-
-import org.geotools.graph.structure.Graph;
-import org.geotools.graph.structure.Node;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
-import controller.input.ShapefileReader;
 import controller.output.CSVWriter;
 import model.port.PortContainer;
-import model.quadtree.RoadNetworkQuadtree;
+import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
 
@@ -32,7 +25,9 @@ public class AnalyzerApp {
 	private final static String csvLocationStaticFile = "historicData/staticData.csv";
 	private final static String csvLocationPortFile = "portList/portList.csv";
 	private final static String locationOfShapefile = "shapefile/RTM_MWotS_jun14_clean.shp";
-	private static RoadNetworkQuadtree quadtree;
+	private final static String csvLocationNodes = "historicNodes/Nodes.csv";
+	// private static RoadNetworkQuadtree quadtree;
+	private static Quadtree quadtree;
 
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
@@ -56,14 +51,7 @@ public class AnalyzerApp {
 	public static void init() {
 
 		System.out.println("Building Quadtree");
-		quadtree = new RoadNetworkQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
-		Graph graph = ShapefileReader.getRTM(locationOfShapefile);
-		@SuppressWarnings("unchecked")
-		Iterator<Node> iterator = graph.getNodes().iterator();
-
-		while (iterator.hasNext()) {
-			quadtree.insert(iterator.next());
-		}
+		quadtree = CSVReader.readHistoricNodes(csvLocationNodes);
 
 		vesselContainer = CSVReader.readStaticAISMessages(csvLocationStaticFile, portContainer);
 		CSVReader.readAndProcessDynamicAISMessages(csvLocationDynamicFile, vesselContainer, quadtree);
