@@ -421,7 +421,8 @@ public class CSVReader {
 		}
 	}
 
-	public static void readAndProcessHistoricJadeData(String csvLocationJadeData, JadeQuadtree jadeQuadtree) {
+	public static ArrayList<JadeNode> readAndProcessHistoricJadeData(String csvLocationJadeData,
+			JadeQuadtree jadeQuadtree) {
 		GeodeticCalculator calculator = new GeodeticCalculator();
 
 		System.out.println("Reading and processing historic Jade data...");
@@ -451,11 +452,10 @@ public class CSVReader {
 
 			}
 
-			ArrayList<JadeNode> all = jadeQuadtree.getAllElements();
-			System.out.println(all.size());
-
+			ArrayList<JadeNode> allJadeNodes = jadeQuadtree.getAllElements();
+			return allJadeNodes;
 		} catch (IOException e) {
-
+			return null;
 		}
 	}
 }

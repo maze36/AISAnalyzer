@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import model.jadeNode.JadeNode;
 import model.statistics.StatisticalNode;
 import model.statistics.StatisticalNodeContainer;
 
@@ -142,6 +144,96 @@ public class CSVWriter {
 		}
 
 		return file;
+	}
+
+	private static File createJadeDirectory() {
+		File file = new File("JadeResults");
+
+		if (!file.exists()) {
+			file.mkdir();
+		}
+
+		return file;
+	}
+
+	public static void writeJadeNodesCSV(ArrayList<JadeNode> result) throws FileNotFoundException {
+		File directory = createJadeDirectory();
+
+		String dirPath = directory.getPath();
+
+		for (JadeNode node : result) {
+			PrintWriter pw = new PrintWriter(new File(dirPath + "/JadeNode_" + node.getName() + ".csv"));
+			StringBuilder sb = new StringBuilder();
+			sb.append("Name");
+			sb.append('+');
+			sb.append("Position");
+			sb.append('+');
+			sb.append("mmsi");
+			sb.append('+');
+			sb.append("heading");
+			sb.append('+');
+			sb.append("sog");
+			sb.append('+');
+			sb.append("cog");
+			sb.append('+');
+			sb.append("rot");
+			sb.append('+');
+			sb.append("theme");
+			sb.append('+');
+			sb.append("timestamp");
+			sb.append('+');
+			sb.append("lat");
+			sb.append('+');
+			sb.append("lon");
+			sb.append('+');
+			sb.append("cog [Binned]");
+			sb.append('+');
+			sb.append("hourOfDay");
+			sb.append('+');
+			sb.append("DailySegment");
+			sb.append('+');
+			sb.append("length");
+			sb.append('+');
+			sb.append("shiptype");
+			sb.append('+');
+			sb.append("mmsi");
+			sb.append('\n');
+
+			for (String[] dataPoint : node.getDataPoints()) {
+
+				sb.append(dataPoint[0]);
+				sb.append('+');
+				sb.append(dataPoint[1]);
+				sb.append('+');
+				sb.append(dataPoint[2]);
+				sb.append('+');
+				sb.append(dataPoint[3]);
+				sb.append('+');
+				sb.append(dataPoint[4]);
+				sb.append('+');
+				sb.append(dataPoint[5]);
+				sb.append('+');
+				sb.append(dataPoint[6]);
+				sb.append('+');
+				sb.append(dataPoint[7]);
+				sb.append('+');
+				sb.append(dataPoint[8]);
+				sb.append('+');
+				sb.append(dataPoint[9]);
+				sb.append('+');
+				sb.append(dataPoint[10]);
+				sb.append('+');
+				sb.append(dataPoint[11]);
+				sb.append('+');
+				sb.append(dataPoint[12]);
+				sb.append('+');
+				sb.append(dataPoint[13]);
+				sb.append('\n');
+			}
+			pw.write(sb.toString());
+			pw.close();
+		}
+
 	}
 
 }

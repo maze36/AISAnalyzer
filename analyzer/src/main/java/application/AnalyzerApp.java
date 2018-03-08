@@ -1,12 +1,15 @@
 package application;
 
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
 import controller.output.CSVWriter;
+import model.jadeNode.JadeNode;
 import model.port.PortContainer;
 import model.quadtree.jadeTree.JadeQuadtree;
 import model.quadtree.newTree.Quadtree;
@@ -66,7 +69,13 @@ public class AnalyzerApp {
 
 	private static void initJadeAnalysis() {
 		JadeQuadtree jadeNodes = CSVReader.readJadeNodes(csvLocationJadeNodes);
-		CSVReader.readAndProcessHistoricJadeData(csvLocationJadeData, jadeNodes);
+		ArrayList<JadeNode> result = CSVReader.readAndProcessHistoricJadeData(csvLocationJadeData, jadeNodes);
+		try {
+			CSVWriter.writeJadeNodesCSV(result);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
