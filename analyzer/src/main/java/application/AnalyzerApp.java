@@ -1,15 +1,14 @@
 package application;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import controller.analyzing.AISStatisticalAnalyzer;
 import controller.input.CSVReader;
 import controller.output.CSVWriter;
-import model.jadeNode.JadeNode;
 import model.port.PortContainer;
+import model.quadtree.jadeTree.JadeQuadtree;
 import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.vessel.VesselContainer;
@@ -26,6 +25,7 @@ public class AnalyzerApp {
 	private static PortContainer portContainer = new PortContainer();
 	private final static String csvLocationDynamicFile = "historicData/dynamicData.csv";
 	private final static String csvLocationStaticFile = "historicData/staticData.csv";
+	private final static String csvLocationJadeData = "historicData/jadeData.csv";
 	private final static String csvLocationJadeNodes = "jadeNodes/jadeNodes.csv";
 	private final static String csvLocationPortFile = "portList/portList.csv";
 	private final static String locationOfShapefile = "shapefile/RTM_MWotS_jun14_clean.shp";
@@ -65,8 +65,8 @@ public class AnalyzerApp {
 	}
 
 	private static void initJadeAnalysis() {
-		ArrayList<JadeNode> jadeNodes = CSVReader.readJadeNodes(csvLocationJadeNodes);
-		CSVReader.readAndProcessHistoricJadeData();
+		JadeQuadtree jadeNodes = CSVReader.readJadeNodes(csvLocationJadeNodes);
+		CSVReader.readAndProcessHistoricJadeData(csvLocationJadeData, jadeNodes);
 
 	}
 

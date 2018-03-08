@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import org.geotools.referencing.GeodeticCalculator;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -23,6 +25,7 @@ import model.jadeNode.JadeNode;
 import model.jadeNode.JadeNodeType;
 import model.port.Port;
 import model.port.PortContainer;
+import model.quadtree.jadeTree.JadeQuadtree;
 import model.quadtree.newTree.Quadtree;
 import model.statistics.StatisticalNodeContainer;
 import model.track.Track;
@@ -385,8 +388,9 @@ public class CSVReader {
 		}
 	}
 
-	public static ArrayList<JadeNode> readJadeNodes(String csvLocationJadeNodes) {
-		ArrayList<JadeNode> jadeNodes = new ArrayList<JadeNode>();
+	public static JadeQuadtree readJadeNodes(String csvLocationJadeNodes) {
+
+		JadeQuadtree jadeQuadtree = new JadeQuadtree(new Envelope(0.0, 100.0, 0.0, 100.0), 100, 100);
 
 		try {
 			@SuppressWarnings("resource")
@@ -399,26 +403,59 @@ public class CSVReader {
 							Double.valueOf(jadeNodeLine[1]));
 					String name = jadeNodeLine[2];
 					JadeNodeType jadeNodeType;
-					if (name.equals("Exit")) {
+					if (name.equals("\"Exit\"")) {
 						jadeNodeType = JadeNodeType.EXIT;
-					} else if (name.equals("Entry")) {
+					} else if (name.equals("\"Entry\"2")) {
 						jadeNodeType = JadeNodeType.ENTRY;
 					} else {
 						jadeNodeType = JadeNodeType.DESTINATION;
 					}
 					JadeNode jadeNode = new JadeNode(position, jadeNodeType, name);
-					jadeNodes.add(jadeNode);
+					jadeQuadtree.insert(jadeNode);
 				}
 			}
-			return jadeNodes;
+			return jadeQuadtree;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public static void readAndProcessHistoricJadeData() {
-		// TODO Auto-generated method stub
+	public static void readAndProcessHistoricJadeData(String csvLocationJadeData, JadeQuadtree jadeQuadtree) {
+		GeodeticCalculator calculator = new GeodeticCalculator();
 
+		System.out.println("Reading and processing historic Jade data...");
+
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocationJadeData));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] jadeNodeLine = LINE.split(AIS_SPLITTER);
+				if (!jadeNodeLine[0].contains("mmsi")) {
+
+					Coordinate dataPosition = new Coordinate(Double.valueOf(jadeNodeLine[7]),
+							Double.valueOf(jadeNodeLine[8]));
+
+					JadeNode nearestNode = jadeQuadtree.findNearestJadeNode(dataPosition);
+
+					calculator.setStartingGeographicPoint(dataPosition.x, dataPosition.y);
+					calculator.setDestinationGeographicPoint(nearestNode.getPosition().x, nearestNode.getPosition().y);
+
+					double distance = calculator.getOrthodromicDistance() * 0.000539957;
+
+					if (distance <= 0.1) {
+						nearestNode.getDataPoints().add(jadeNodeLine);
+					}
+				}
+
+			}
+
+			ArrayList<JadeNode> all = jadeQuadtree.getAllElements();
+			System.out.println(all.size());
+
+		} catch (IOException e) {
+
+		}
 	}
 }
