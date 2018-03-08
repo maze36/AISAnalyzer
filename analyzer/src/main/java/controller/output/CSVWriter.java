@@ -162,7 +162,10 @@ public class CSVWriter {
 		String dirPath = directory.getPath();
 
 		for (JadeNode node : result) {
-			PrintWriter pw = new PrintWriter(new File(dirPath + "/JadeNode_" + node.getName() + ".csv"));
+
+			String name = node.getName().replaceAll("\"", "");
+
+			PrintWriter pw = new PrintWriter(new File(dirPath + "/JadeNode_" + name + ".csv"));
 			StringBuilder sb = new StringBuilder();
 			sb.append("Name");
 			sb.append('+');
