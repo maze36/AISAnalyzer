@@ -19,6 +19,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import controller.analyzing.AISStatisticalAnalyzer;
 import controller.output.CSVWriter;
 import model.ais.AISMessage;
+import model.jadeNode.JadeNode;
+import model.jadeNode.JadeNodeType;
 import model.port.Port;
 import model.port.PortContainer;
 import model.quadtree.newTree.Quadtree;
@@ -381,5 +383,42 @@ public class CSVReader {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static ArrayList<JadeNode> readJadeNodes(String csvLocationJadeNodes) {
+		ArrayList<JadeNode> jadeNodes = new ArrayList<JadeNode>();
+
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new FileReader(csvLocationJadeNodes));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] jadeNodeLine = LINE.split(AIS_SPLITTER);
+				if (!jadeNodeLine[0].contains("lat")) {
+					Coordinate position = new Coordinate(Double.valueOf(jadeNodeLine[0]),
+							Double.valueOf(jadeNodeLine[1]));
+					String name = jadeNodeLine[2];
+					JadeNodeType jadeNodeType;
+					if (name.equals("Exit")) {
+						jadeNodeType = JadeNodeType.EXIT;
+					} else if (name.equals("Entry")) {
+						jadeNodeType = JadeNodeType.ENTRY;
+					} else {
+						jadeNodeType = JadeNodeType.DESTINATION;
+					}
+					JadeNode jadeNode = new JadeNode(position, jadeNodeType, name);
+					jadeNodes.add(jadeNode);
+				}
+			}
+			return jadeNodes;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static void readAndProcessHistoricJadeData() {
+		// TODO Auto-generated method stub
+
 	}
 }
