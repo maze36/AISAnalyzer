@@ -57,7 +57,6 @@ public class AnalyzerApp {
 		default:
 			break;
 		}
-		initRTMAnalysis();
 
 		long endTime = System.currentTimeMillis();
 
