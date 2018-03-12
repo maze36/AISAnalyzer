@@ -169,7 +169,9 @@ public class CSVWriter {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Name");
 			sb.append('+');
-			sb.append("Position");
+			sb.append("Position lat");
+			sb.append('+');
+			sb.append("Position lon");
 			sb.append('+');
 			sb.append("mmsi");
 			sb.append('+');
@@ -204,11 +206,11 @@ public class CSVWriter {
 
 			for (String[] dataPoint : node.getDataPoints()) {
 
-				sb.append(dataPoint[0]);
+				sb.append(node.getName());
 				sb.append('+');
-				sb.append(dataPoint[1]);
+				sb.append(node.getPosition().x);
 				sb.append('+');
-				sb.append(dataPoint[2]);
+				sb.append(node.getPosition().y);
 				sb.append('+');
 				sb.append(dataPoint[3]);
 				sb.append('+');

@@ -30,10 +30,7 @@ public class AnalyzerApp {
 	private final static String csvLocationStaticFile = "historicData/staticData.csv";
 	private final static String csvLocationJadeData = "historicData/jadeData.csv";
 	private final static String csvLocationJadeNodes = "jadeNodes/jadeNodes.csv";
-	private final static String csvLocationPortFile = "portList/portList.csv";
-	private final static String locationOfShapefile = "shapefile/RTM_MWotS_jun14_clean.shp";
 	private final static String csvLocationNodes = "historicNodes/Nodes.csv";
-	// private static RoadNetworkQuadtree quadtree;
 	private static Quadtree quadtree;
 
 	public static void main(String[] args) {
@@ -50,10 +47,13 @@ public class AnalyzerApp {
 
 		switch (in) {
 		case 1:
+			scanner.close();
 			initRTMAnalysis();
 			break;
 		case 2:
+			scanner.close();
 			initJadeAnalysis();
+			break;
 		default:
 			break;
 		}
@@ -72,7 +72,6 @@ public class AnalyzerApp {
 		try {
 			CSVWriter.writeJadeNodesCSV(result);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
