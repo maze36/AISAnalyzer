@@ -212,6 +212,12 @@ public class CSVWriter {
 				sb.append('+');
 				sb.append(node.getPosition().y);
 				sb.append('+');
+				sb.append(dataPoint[0]);
+				sb.append('+');
+				sb.append(dataPoint[1]);
+				sb.append('+');
+				sb.append(dataPoint[2]);
+				sb.append('+');
 				sb.append(dataPoint[3]);
 				sb.append('+');
 				sb.append(dataPoint[4]);
@@ -233,6 +239,10 @@ public class CSVWriter {
 				sb.append(dataPoint[12]);
 				sb.append('+');
 				sb.append(dataPoint[13]);
+				sb.append('+');
+				sb.append(dataPoint[14]);
+				sb.append('+');
+				sb.append(dataPoint[15]);
 				sb.append('\n');
 			}
 			pw.write(sb.toString());
